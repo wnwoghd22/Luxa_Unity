@@ -5,7 +5,6 @@ using System;
 using UnityEngine;
 
 public class FileManager {
-   
     public Board ReadStageFileForLocal(int n) {
         string filePath = Path.Combine(Application.streamingAssetsPath, "Stages/" + n + ".txt");
         StreamReader file = new StreamReader(filePath);
@@ -15,7 +14,28 @@ public class FileManager {
 
         Board b = new Board(Convert.ToInt32(size[0]), Convert.ToInt32(size[1]));
 
-        Debug.Log(size[0] + size[1]);
+        int beadNum = Convert.ToInt32(file.ReadLine());
+        while(beadNum-- > 0) {
+            string[] beadInfo = file.ReadLine().Split(' ');
+            b.SetBeads(
+                Convert.ToInt32(beadInfo[0]),
+                Convert.ToInt32(beadInfo[1]),
+                Convert.ToInt32(beadInfo[2]),
+                Convert.ToInt32(beadInfo[3]),
+                Convert.ToInt32(beadInfo[4])
+            );
+        }
+
+        int ringNum = Convert.ToInt32(file.ReadLine());
+        while (ringNum-- > 0)
+        {
+            string[] ringInfo = file.ReadLine().Split(' ');
+            b.AddRing(
+                Convert.ToInt32(ringInfo[0]),
+                Convert.ToInt32(ringInfo[1]),
+                Convert.ToInt32(ringInfo[2])
+            );
+        }
 
         return b;
     }

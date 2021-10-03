@@ -3,7 +3,10 @@ using System.Collections.Generic;
 public class Board
 {
 	private Whole[,] board;
-	private List<Ring> rings;
+    public Whole[,] GetBoard() => board;
+
+    private List<Ring> rings;
+	public List<Ring> GetRings() => rings;
 
 	public Board(int col, int row) {
 		board = new Whole[col, row];
