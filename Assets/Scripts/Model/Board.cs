@@ -6,7 +6,7 @@ public class Board
     public Whole[,] GetBoard() => board;
 
     private List<Ring> rings;
-	public List<Ring> GetRings() => rings;
+	public Ring[] GetRings() => rings.ToArray();
 
 	public Board(int col, int row) {
 		board = new Whole[col, row];

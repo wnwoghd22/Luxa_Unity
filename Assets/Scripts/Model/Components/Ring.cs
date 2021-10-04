@@ -5,8 +5,11 @@ enum eColor {
 }
 
 public class Ring {
-	readonly int x, y;
-	readonly eColor color;
+	private int x, y;
+	public int posX => x;
+	public int posY => y;
+	private eColor color;
+	public int Color => (int)color;
 
 	public Ring(int x, int y, int color) {
 		this.x = x;

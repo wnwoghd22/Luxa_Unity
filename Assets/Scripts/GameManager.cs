@@ -6,12 +6,21 @@ public class GameManager : MonoBehaviour
 {
     FileManager fm = new FileManager();
     Board board;
+    Viewer viewer;
 
-    void Start() {
-        board = fm.ReadStageFileForLocal(1);
+    void Start()
+    {
+        viewer = FindObjectOfType<Viewer>();
+        InitializeStage(1);
     }
 
     void Update() {
         
+    }
+
+    public void InitializeStage(int n)
+    {
+        board = fm.ReadStageFileForLocal(n);
+        viewer.CreateBoard(board);
     }
 }
