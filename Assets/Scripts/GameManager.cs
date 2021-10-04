@@ -23,4 +23,10 @@ public class GameManager : MonoBehaviour
         board = fm.ReadStageFileForLocal(n);
         viewer.CreateBoard(board);
     }
+
+    public void ViewerUpdate(int index, bool dir)
+    {
+        board.Rotate(index, dir);
+        viewer.UpdateBoard(index, dir);
+    }
 }

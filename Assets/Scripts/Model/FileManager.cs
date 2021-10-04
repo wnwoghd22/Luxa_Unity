@@ -27,13 +27,14 @@ public class FileManager {
         }
 
         int ringNum = Convert.ToInt32(file.ReadLine());
-        while (ringNum-- > 0)
+        for (int i = 0; i < ringNum; ++i)
         {
             string[] ringInfo = file.ReadLine().Split(' ');
             b.AddRing(
                 Convert.ToInt32(ringInfo[0]),
                 Convert.ToInt32(ringInfo[1]),
-                Convert.ToInt32(ringInfo[2])
+                Convert.ToInt32(ringInfo[2]),
+                i
             );
         }
 

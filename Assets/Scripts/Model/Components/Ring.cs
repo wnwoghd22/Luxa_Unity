@@ -10,11 +10,13 @@ public class Ring {
 	public int posY => y;
 	private eColor color;
 	public int Color => (int)color;
+    public int Index { get; private set; }
 
-	public Ring(int x, int y, int color) {
+    public Ring(int x, int y, int color, int i) {
 		this.x = x;
 		this.y = y;
 		this.color = (eColor)color;
+		Index = i;
 	}
 
 	/// <summary>

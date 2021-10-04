@@ -17,9 +17,9 @@ public class Board
 	}
 
     public void SetBeads(int x, int y, int r, int g, int b) => board[x, y].init(r, g, b);
-    public void AddRing(int x, int y, int color) => rings.Add(new Ring(x, y, color));
+    public void AddRing(int x, int y, int color, int i) => rings.Add(new Ring(x, y, color, i));
 
-    public void Rotate(int ring, int dir) => rings[ring].rotate(board, dir == 0);
+    public void Rotate(int ring, bool dir) => rings[ring].rotate(board, dir);
 
     public bool GetComplete() {
 		bool result = true;

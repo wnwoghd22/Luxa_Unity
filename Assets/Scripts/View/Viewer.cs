@@ -50,12 +50,14 @@ public class Viewer : MonoBehaviour {
             ringInstances[i] = Instantiate(ringPrefab, new Vector3(0, 0, 0), Quaternion.identity).GetComponent<RingObject>();
             ringInstances[i].SetGridPos(rings[i].posX, rings[i].posY);
             ringInstances[i].SetColor(rings[i].Color);
+            ringInstances[i].SetIndex(i);
         }
         
     }
 
-    public void UpdateBoard()
+    public void UpdateBoard(int index, bool dir)
     {
-
+        if (dir) ringInstances[index].RotateClockwise(beadInstances);
+        else ringInstances[index].RotateCounterclockwise(beadInstances);
     }
 }
