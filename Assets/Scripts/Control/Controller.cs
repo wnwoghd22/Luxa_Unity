@@ -98,12 +98,13 @@ public class Controller : MonoBehaviour {
     private void Rotate()
     {
         int _index = currentActivated.Index;
-        Vector2 center = new Vector2(currentActivated.posX, currentActivated.posY);
+        Vector2 center = currentActivated.gameObject.transform.position;
+        //Vector2 center = new Vector2(currentActivated.posX, currentActivated.posY);
         initialPos -= center; endPos -= center; //normalize
         currentActivated = null;
 
-        float zeta = initialPos.x * endPos.y - initialPos.y * endPos.y;
-        Debug.Log(zeta);
+        float zeta = initialPos.x * endPos.y - initialPos.y * endPos.x;
+        Debug.Log(initialPos + " " + endPos + center + zeta);
         if (Mathf.Abs(zeta) < 1f) return;
 
         gm.ViewerUpdate(_index, zeta < 0);
