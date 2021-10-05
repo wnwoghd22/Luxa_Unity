@@ -5,6 +5,15 @@ using UnityEngine;
 public class BeadObject : BoardObject 
 {
     Color color;
+    private float angleOffset;
+   
+    private Vector3 originPos;
+
+    public void SetAngleOffset(float f)
+    {
+        angleOffset = f;
+        originPos = transform.position;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -26,10 +35,11 @@ public class BeadObject : BoardObject
 
     public void UpdatePosition(float angle, Vector3 center)
     {
-        Vector3 normalized = transform.position - center;
+        float theta = angle + angleOffset;
+        Vector3 normalized = originPos - center;
         Vector3 reposition = new Vector3(
-            Mathf.Cos(angle) * normalized.x - Mathf.Sin(angle) * normalized.y,
-            Mathf.Sin(angle) * normalized.x + Mathf.Cos(angle) * normalized.y,
+            Mathf.Cos(theta) * normalized.x - Mathf.Sin(theta) * normalized.y,
+            Mathf.Sin(theta) * normalized.x + Mathf.Cos(theta) * normalized.y,
             0
         ) + center;
 

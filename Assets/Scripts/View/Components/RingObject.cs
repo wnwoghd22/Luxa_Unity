@@ -40,6 +40,7 @@ public class RingObject : BoardObject
                 beads[4] = board[x, y + 1];
                 beads[5] = board[x - 1, y];
             }
+            foreach (BeadObject bead in beads) bead.SetAngleOffset(angleOffset);
         }
     }
     
