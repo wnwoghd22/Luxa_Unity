@@ -11,6 +11,7 @@ public class BeadObject : BoardObject
 
     public void SetAngleOffset(float f)
     {
+        //Debug.Log(f);
         angleOffset = f;
         originPos = transform.position;
     }

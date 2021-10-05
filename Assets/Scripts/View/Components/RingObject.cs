@@ -21,6 +21,8 @@ public class RingObject : BoardObject
         isActivated = b;
         if (b)
         {
+            SetAlpha(0.7f);
+
             beads = new BeadObject[6];
             if (posX % 2 == 0)
             { // is even
@@ -40,7 +42,10 @@ public class RingObject : BoardObject
                 beads[4] = board[x, y + 1];
                 beads[5] = board[x - 1, y];
             }
+            SetAngleOffset();
             foreach (BeadObject bead in beads) bead.SetAngleOffset(angleOffset);
+
+            HandleRotate();
         }
     }
     
@@ -48,13 +53,13 @@ public class RingObject : BoardObject
     // Start is called before the first frame update
     void Start()
     {
-        
+        angleOffset = 0f;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButton(0) && isActivated) HandleRotate();
+        if (isActivated) HandleRotate();
     }
 
     public override void SetGridPos(int x, int y)
@@ -85,6 +90,7 @@ public class RingObject : BoardObject
     {
         //Debug.Log("rotate clockwise");
         beads = null;
+        angleOffset = 0f;
 
         if (posX % 2 == 0)
         { // is even
@@ -124,6 +130,7 @@ public class RingObject : BoardObject
     public void RotateCounterclockwise(BeadObject[,] board)
     {
         beads = null;
+        angleOffset = 0f;
 
         if (posX % 2 == 0)
         { // is even
@@ -161,18 +168,18 @@ public class RingObject : BoardObject
         }
     }
 
-    public void SetAngleOffset(Vector3 v)
+    public void SetAngleOffset()
     {
         screenPos = Camera.main.WorldToScreenPoint(transform.position);
         Vector3 vec3 = Input.mousePosition - screenPos;
-        angleOffset = (Mathf.Atan2(transform.right.y, transform.right.x) - Mathf.Atan2(vec3.y, vec3.x)) * Mathf.Rad2Deg;
+        angleOffset = Mathf.Atan2(transform.right.y, transform.right.x) - Mathf.Atan2(vec3.y, vec3.x);
     }
     public void HandleRotate()
     {
         //Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position);
         Vector3 vec3 = Input.mousePosition - screenPos;
         float angle = Mathf.Atan2(vec3.y, vec3.x);
-        transform.eulerAngles = new Vector3(0, 0, angle * Mathf.Rad2Deg + angleOffset);
+        transform.eulerAngles = new Vector3(0, 0, angle * Mathf.Rad2Deg + angleOffset * Mathf.Rad2Deg);
 
         foreach (BeadObject bead in beads) bead.UpdatePosition(angle, transform.position);
     }

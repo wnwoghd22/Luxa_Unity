@@ -25,7 +25,7 @@ public class Controller : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        HandleTouch();
+        //HandleTouch();
         HandleClick();
     }
     private void HandleClick()
@@ -36,16 +36,9 @@ public class Controller : MonoBehaviour {
             Vector2 pos = new Vector2(mousePos.x, mousePos.y);
             Collider2D[] hits = Physics2D.OverlapPointAll(pos);
 
-            //foreach (Collider2D hit in hits)
-            //    Debug.Log(hit);
-
             if (hits.Length == 1)
-            {
+            {    
                 currentActivated = hits[0].gameObject.GetComponent<RingObject>();
-                //Debug.Log(currentActivated.Index);
-                //currentActivated.set
-                currentActivated.SetAlpha(0.7f);
-                currentActivated.SetAngleOffset(mousePos);
                 initialPos = pos;
                 gm.SetRingActivate(currentActivated.Index);
             }
