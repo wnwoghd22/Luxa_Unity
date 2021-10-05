@@ -60,4 +60,6 @@ public class Viewer : MonoBehaviour {
         if (dir) ringInstances[index].RotateClockwise(beadInstances);
         else ringInstances[index].RotateCounterclockwise(beadInstances);
     }
+
+    public void SetRingActivate(int i) => ringInstances[i].SetActive(true, beadInstances);
 }

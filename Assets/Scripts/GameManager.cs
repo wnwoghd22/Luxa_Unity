@@ -29,4 +29,5 @@ public class GameManager : MonoBehaviour
         board.Rotate(index, dir);
         viewer.UpdateBoard(index, dir);
     }
+    public void SetRingActivate(int i) => viewer.SetRingActivate(i);
 }

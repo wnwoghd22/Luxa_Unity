@@ -41,10 +41,13 @@ public class Controller : MonoBehaviour {
 
             if (hits.Length == 1)
             {
-                currentActivated = hits[0].gameObject.GetComponent<RingCollider>().Ring;
-                Debug.Log(currentActivated.Index);
+                currentActivated = hits[0].gameObject.GetComponent<RingObject>();
+                //Debug.Log(currentActivated.Index);
+                //currentActivated.set
                 currentActivated.SetAlpha(0.7f);
+                currentActivated.SetAngleOffset(mousePos);
                 initialPos = pos;
+                gm.SetRingActivate(currentActivated.Index);
             }
         }
         else if (Input.GetMouseButtonUp(0))
@@ -56,6 +59,7 @@ public class Controller : MonoBehaviour {
             {
                 endPos = pos;
                 currentActivated.SetAlpha(0.3f);
+                currentActivated.SetActive(false);
                 Rotate();
             }
         }
@@ -103,8 +107,8 @@ public class Controller : MonoBehaviour {
         initialPos -= center; endPos -= center; //normalize
         currentActivated = null;
 
-        float zeta = initialPos.x * endPos.y - initialPos.y * endPos.x;
-        Debug.Log(initialPos + " " + endPos + center + zeta);
+        float zeta = initialPos.x * endPos.y - initialPos.y * endPos.x ;
+        //Debug.Log(initialPos + " " + endPos + center + zeta);
         if (Mathf.Abs(zeta) < 1f) return;
 
         gm.ViewerUpdate(_index, zeta < 0);

@@ -23,4 +23,16 @@ public class BeadObject : BoardObject
         SpriteRenderer renderer = gameObject.GetComponent<SpriteRenderer>();
         renderer.color = new Color(r, g, b, 1);
     }
+
+    public void UpdatePosition(float angle, Vector3 center)
+    {
+        Vector3 normalized = transform.position - center;
+        Vector3 reposition = new Vector3(
+            Mathf.Cos(angle) * normalized.x - Mathf.Sin(angle) * normalized.y,
+            Mathf.Sin(angle) * normalized.x + Mathf.Cos(angle) * normalized.y,
+            0
+        ) + center;
+
+        transform.position = reposition;
+    }
 }

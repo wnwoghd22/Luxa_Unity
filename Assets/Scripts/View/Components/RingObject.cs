@@ -9,6 +9,39 @@ public class RingObject : BoardObject
     private int y;
     public int posY => y;
     public int Index { get; private set; }
+    private float angleOffset;
+    public void SetAngleOffset(float f) => angleOffset = f;
+    private bool isActivated;
+    //public void SetActive(bool b) => isActivated = b;
+    private Vector3 screenPos;
+    private BeadObject[] beads;
+
+    public void SetActive(bool b, BeadObject[,] board = null)
+    {
+        isActivated = b;
+        if (b)
+        {
+            beads = new BeadObject[6];
+            if (posX % 2 == 0)
+            { // is even
+                beads[0] = board[x - 1, y];
+                beads[1] = board[x, y - 1];
+                beads[2] = board[x + 1, y];
+                beads[3] = board[x + 1, y + 1];
+                beads[4] = board[x, y + 1];
+                beads[5] = board[x - 1, y + 1];
+            }
+            else
+            { // is odd
+                beads[0] = board[x - 1, y - 1];
+                beads[1] = board[x, y - 1];
+                beads[2] = board[x + 1, y - 1];
+                beads[3] = board[x + 1, y];
+                beads[4] = board[x, y + 1];
+                beads[5] = board[x - 1, y];
+            }
+        }
+    }
     
 
     // Start is called before the first frame update
@@ -20,7 +53,7 @@ public class RingObject : BoardObject
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetMouseButton(0) && isActivated) HandleRotate();
     }
 
     public override void SetGridPos(int x, int y)
@@ -49,7 +82,8 @@ public class RingObject : BoardObject
 
     public void RotateClockwise(BeadObject[,] board)
     {
-        Debug.Log("rotate clockwise");
+        //Debug.Log("rotate clockwise");
+        beads = null;
 
         if (posX % 2 == 0)
         { // is even
@@ -88,6 +122,8 @@ public class RingObject : BoardObject
     }
     public void RotateCounterclockwise(BeadObject[,] board)
     {
+        beads = null;
+
         if (posX % 2 == 0)
         { // is even
             BeadObject temp = board[x - 1, y];
@@ -122,5 +158,21 @@ public class RingObject : BoardObject
             board[x, y + 1].SetGridPos(x, y + 1);
             board[x - 1, y].SetGridPos(x - 1, y);
         }
+    }
+
+    public void SetAngleOffset(Vector3 v)
+    {
+        screenPos = Camera.main.WorldToScreenPoint(transform.position);
+        Vector3 vec3 = Input.mousePosition - screenPos;
+        angleOffset = (Mathf.Atan2(transform.right.y, transform.right.x) - Mathf.Atan2(vec3.y, vec3.x)) * Mathf.Rad2Deg;
+    }
+    public void HandleRotate()
+    {
+        //Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position);
+        Vector3 vec3 = Input.mousePosition - screenPos;
+        float angle = Mathf.Atan2(vec3.y, vec3.x);
+        transform.eulerAngles = new Vector3(0, 0, angle * Mathf.Rad2Deg + angleOffset);
+
+        foreach (BeadObject bead in beads) bead.UpdatePosition(angle, transform.position);
     }
 }
