@@ -8,12 +8,15 @@ public class BeadObject : BoardObject
     private float angleOffset;
    
     private Vector3 originPos;
+    private float originAngle;
 
-    public void SetAngleOffset(float f)
+    public void SetAngleOffset(Vector3 center, float angle)
     {
-        //Debug.Log(f);
-        angleOffset = f;
         originPos = transform.position;
+        Vector3 v = originPos - center;
+        Debug.Log(originPos + " " + center + " " + v);
+        originAngle = Mathf.Atan2(v.y, v.x);
+        //originAngle = angle;
     }
 
     // Start is called before the first frame update
@@ -36,7 +39,9 @@ public class BeadObject : BoardObject
 
     public void UpdatePosition(float angle, Vector3 center)
     {
-        float theta = angle + angleOffset;
+        Debug.Log(angle + " " + originAngle + " " + center);
+        //float theta = angle + angleOffset;
+        float theta = angle;// + originAngle;
         Vector3 normalized = originPos - center;
         Vector3 reposition = new Vector3(
             Mathf.Cos(theta) * normalized.x - Mathf.Sin(theta) * normalized.y,

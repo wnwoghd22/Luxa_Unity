@@ -9,6 +9,7 @@ public class RingObject : BoardObject
     private int y;
     public int posY => y;
     public int Index { get; private set; }
+    private float initialAngle;
     private float angleOffset;
     public void SetAngleOffset(float f) => angleOffset = f;
     private bool isActivated;
@@ -26,6 +27,7 @@ public class RingObject : BoardObject
             beads = new BeadObject[6];
             if (posX % 2 == 0)
             { // is even
+                Debug.Log(posX + "even");
                 beads[0] = board[x - 1, y];
                 beads[1] = board[x, y - 1];
                 beads[2] = board[x + 1, y];
@@ -35,6 +37,7 @@ public class RingObject : BoardObject
             }
             else
             { // is odd
+                Debug.Log(posX + "odd");
                 beads[0] = board[x - 1, y - 1];
                 beads[1] = board[x, y - 1];
                 beads[2] = board[x + 1, y - 1];
@@ -43,7 +46,11 @@ public class RingObject : BoardObject
                 beads[5] = board[x - 1, y];
             }
             SetAngleOffset();
-            foreach (BeadObject bead in beads) bead.SetAngleOffset(angleOffset);
+            Debug.Log(beads.Length);
+            foreach (BeadObject bead in beads) {
+                Debug.Log("set angle");
+                bead.SetAngleOffset(transform.position, angleOffset); 
+            }
 
             HandleRotate();
         }
@@ -62,14 +69,10 @@ public class RingObject : BoardObject
         if (isActivated) HandleRotate();
     }
 
-    public override void SetGridPos(int x, int y)
+    public override void SetGridPos(int x, int y, int z = 1)
     {
         SetPos(x, y);
-        float pos_x = ((x + 1) % 2) + y * 2;
-        float pos_y = 3 - x * Mathf.Sqrt(3);
-        Vector3 pos = new Vector3(pos_x, pos_y, 1);
-
-        gameObject.transform.position = pos;
+        base.SetGridPos(x, y, z);
     }
 
     public void SetIndex(int i) => Index = i;
@@ -172,6 +175,7 @@ public class RingObject : BoardObject
     {
         screenPos = Camera.main.WorldToScreenPoint(transform.position);
         Vector3 vec3 = Input.mousePosition - screenPos;
+        initialAngle = Mathf.Atan2(vec3.y, vec3.x);
         angleOffset = Mathf.Atan2(transform.right.y, transform.right.x) - Mathf.Atan2(vec3.y, vec3.x);
     }
     public void HandleRotate()
@@ -181,6 +185,6 @@ public class RingObject : BoardObject
         float angle = Mathf.Atan2(vec3.y, vec3.x);
         transform.eulerAngles = new Vector3(0, 0, angle * Mathf.Rad2Deg + angleOffset * Mathf.Rad2Deg);
 
-        foreach (BeadObject bead in beads) bead.UpdatePosition(angle, transform.position);
+        foreach (BeadObject bead in beads) bead.UpdatePosition(angle - initialAngle, transform.position);
     }
 }
