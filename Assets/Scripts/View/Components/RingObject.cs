@@ -170,6 +170,30 @@ public class RingObject : BoardObject
             board[x - 1, y].SetGridPos(x - 1, y);
         }
     }
+    public void UndoRotate(BeadObject[,] board)
+    {
+        beads = null;
+        angleOffset = 0f;
+
+        if (posX % 2 == 0)
+        { // is even
+            board[x - 1, y].SetGridPos(x - 1, y);
+            board[x, y - 1].SetGridPos(x, y - 1);
+            board[x + 1, y].SetGridPos(x + 1, y);
+            board[x + 1, y + 1].SetGridPos(x + 1, y + 1);
+            board[x, y + 1].SetGridPos(x, y + 1);
+            board[x - 1, y + 1].SetGridPos(x - 1, y + 1);
+        }
+        else
+        { // is odd
+            board[x - 1, y - 1].SetGridPos(x - 1, y - 1);
+            board[x, y - 1].SetGridPos(x, y - 1);
+            board[x + 1, y - 1].SetGridPos(x + 1, y - 1);
+            board[x + 1, y].SetGridPos(x + 1, y);
+            board[x, y + 1].SetGridPos(x, y + 1);
+            board[x - 1, y].SetGridPos(x - 1, y);
+        }
+    }
 
     public void SetAngleOffset()
     {

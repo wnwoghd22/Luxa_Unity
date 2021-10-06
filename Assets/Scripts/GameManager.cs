@@ -15,7 +15,8 @@ public class GameManager : MonoBehaviour
         //InitializeStage(7);
     }
 
-    void Update() {
+    void Update()
+    {
         
     }
 
@@ -25,10 +26,17 @@ public class GameManager : MonoBehaviour
         viewer.CreateBoard(board);
     }
 
-    public void ViewerUpdate(int index, bool dir)
+    public void ViewerUpdate(int index, float zeta)
     {
-        board.Rotate(index, dir);
-        viewer.UpdateBoard(index, dir);
+        if (Mathf.Abs(zeta) < 0.3f)
+        {
+            viewer.UndoRotate(index);
+        }
+        else
+        {
+            board.Rotate(index, zeta < 0);
+            viewer.UpdateBoard(index, zeta < 0);
+        }
     }
     public void SetRingActivate(int i) => viewer.SetRingActivate(i);
 }

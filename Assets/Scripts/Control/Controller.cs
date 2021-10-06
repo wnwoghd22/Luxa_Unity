@@ -102,8 +102,8 @@ public class Controller : MonoBehaviour {
 
         float zeta = initialPos.x * endPos.y - initialPos.y * endPos.x ;
         //Debug.Log(initialPos + " " + endPos + center + zeta);
-        if (Mathf.Abs(zeta) < 1f) return;
+        //if (Mathf.Abs(zeta) < 1f) return;
 
-        gm.ViewerUpdate(_index, zeta < 0);
+        gm.ViewerUpdate(_index, zeta);
     }
 }
