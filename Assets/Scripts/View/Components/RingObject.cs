@@ -69,10 +69,10 @@ public class RingObject : BoardObject
         if (isActivated) HandleRotate();
     }
 
-    public override void SetGridPos(int x, int y, int z = 1)
+    public override void SetGridPos(float offsetX, float offsetY, float unit, int x, int y, int z = 1)
     {
         SetPos(x, y);
-        base.SetGridPos(x, y, z);
+        base.SetGridPos(offsetX, offsetY, unit, x, y, z);
     }
 
     public void SetIndex(int i) => Index = i;

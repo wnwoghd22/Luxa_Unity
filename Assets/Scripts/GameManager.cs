@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     {
         viewer = FindObjectOfType<Viewer>();
         InitializeStage(1);
+        //InitializeStage(7);
     }
 
     void Update() {

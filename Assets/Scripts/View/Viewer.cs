@@ -10,6 +10,12 @@ public class Viewer : MonoBehaviour {
     private BeadObject[,] beadInstances;
     private RingObject[] ringInstances;
 
+    private int _col, _row;
+
+    private float unit;
+    private float offsetX;
+    private float offsetY;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,10 +30,17 @@ public class Viewer : MonoBehaviour {
 
     public void CreateBoard(Board b) {
         Whole[,] _board = b.GetBoard();
-        int _row = _board.GetLength(0);
-        int _col = _board.GetLength(1);
+        _row = _board.GetLength(0);
+        _col = _board.GetLength(1);
 
         beadInstances = new BeadObject[_row, _col];
+
+        unit = (float)Camera.main.orthographicSize / (_col + 2);
+        Debug.Log(Camera.main.orthographicSize);
+        offsetX = - unit * (_col - 1) / 2;
+        offsetY = unit * (_row - 1) * Mathf.Sqrt(3) / 4;
+        Debug.Log(_col + " " + _row + " " + offsetX + " " + offsetY + " " + unit);
+
         for (int i = 0; i < _row; ++i)
         {
             for (int j = 0; j < _col; ++j)
@@ -35,7 +48,7 @@ public class Viewer : MonoBehaviour {
                 if (_board[i, j].Bead != null)
                 {
                     beadInstances[i, j] = Instantiate(beadPrefab, new Vector3(0, 0, 0), Quaternion.identity).GetComponent<BeadObject>();
-                    beadInstances[i, j].SetGridPos(i, j);
+                    beadInstances[i, j].SetGridPos(offsetX, offsetY, unit, i, j);
                     beadInstances[i, j].SetColor(_board[i, j].Bead.hasRed ? 1 : 0,
                                                  _board[i, j].Bead.hasGreen ? 1 : 0,
                                                  _board[i, j].Bead.hasBlue ? 1 : 0);
@@ -48,7 +61,7 @@ public class Viewer : MonoBehaviour {
         for (int i = 0; i < rings.Length; ++i)
         {
             ringInstances[i] = Instantiate(ringPrefab, new Vector3(0, 0, 0), Quaternion.identity).GetComponent<RingObject>();
-            ringInstances[i].SetGridPos(rings[i].posX, rings[i].posY);
+            ringInstances[i].SetGridPos(offsetX, offsetY, unit, rings[i].posX, rings[i].posY, 1);
             ringInstances[i].SetColor(rings[i].Color);
             ringInstances[i].SetIndex(i);
         }
