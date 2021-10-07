@@ -198,14 +198,17 @@ public class RingObject : BoardObject
     public void SetAngleOffset()
     {
         screenPos = Camera.main.WorldToScreenPoint(transform.position);
-        Vector3 vec3 = Input.mousePosition - screenPos;
+        Vector3 pos = SystemInfo.deviceType == DeviceType.Desktop ? Input.mousePosition : (Vector3)Input.GetTouch(0).position;
+
+        Vector3 vec3 = pos - screenPos;
         initialAngle = Mathf.Atan2(vec3.y, vec3.x);
         angleOffset = Mathf.Atan2(transform.right.y, transform.right.x) - Mathf.Atan2(vec3.y, vec3.x);
     }
     public void HandleRotate()
     {
-        //Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position);
-        Vector3 vec3 = Input.mousePosition - screenPos;
+        Vector3 pos = SystemInfo.deviceType == DeviceType.Desktop ? Input.mousePosition : (Vector3)Input.GetTouch(0).position;
+
+        Vector3 vec3 = pos - screenPos;
         float angle = Mathf.Atan2(vec3.y, vec3.x);
         transform.eulerAngles = new Vector3(0, 0, angle * Mathf.Rad2Deg + angleOffset * Mathf.Rad2Deg);
 

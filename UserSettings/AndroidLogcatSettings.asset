@@ -1,13 +1,32 @@
 {
-    "m_SelectedDeviceId": "",
+    "m_SelectedDeviceId": "R3CN5045DGM",
     "m_SelectedPackage": {
-        "deviceId": "",
-        "name": "",
-        "processId": 0,
+        "deviceId": "R3CN5045DGM",
+        "name": "com.Jay.Luxa",
+        "processId": 10469,
         "exited": false
     },
     "m_SelectedPriority": 0,
-    "m_KnownPackagesForSerialization": [],
+    "m_KnownPackagesForSerialization": [
+        {
+            "deviceId": "R3CN5045DGM",
+            "name": "com.Jay.Luxa",
+            "processId": 7705,
+            "exited": false
+        },
+        {
+            "deviceId": "R3CN5045DGM",
+            "name": "com.Jay.Luxa",
+            "processId": 8934,
+            "exited": false
+        },
+        {
+            "deviceId": "R3CN5045DGM",
+            "name": "com.Jay.Luxa",
+            "processId": 10469,
+            "exited": false
+        }
+    ],
     "m_Tags": {
         "m_Entries": [
             {
@@ -41,9 +60,20 @@
         ]
     },
     "m_MemoryViewerState": {
-        "MemoryWindowHeight": 0.0,
-        "MemoryWindowWidth": 0.0,
-        "MemoryTypeEnabled": [],
+        "MemoryWindowHeight": 300.0,
+        "MemoryWindowWidth": 170.0,
+        "MemoryTypeEnabled": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+        ],
         "MemoryGroup": 2,
         "Behavior": 0
     },

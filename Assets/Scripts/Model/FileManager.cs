@@ -6,7 +6,20 @@ using UnityEngine;
 
 public class FileManager {
     public Board ReadStageFileForLocal(int n) {
-        string filePath = Path.Combine(Application.streamingAssetsPath, "Stages/" + n + ".txt");
+        string os = SystemInfo.operatingSystem;
+
+        string filePath = "";
+
+        //filePath = Path.Combine(Application.streamingAssetsPath, "Stages/" + n + ".txt");
+
+        if (os.Contains("Windows"))
+        {
+            filePath = Path.Combine(Application.streamingAssetsPath, "Stages/" + n + ".txt");
+        }
+        else if (os.Contains("Android"))
+        {
+            filePath = "jar:file://" + Application.dataPath + "!/assets/Stages/" + n;
+        }
         StreamReader file = new StreamReader(filePath);
 
         string boardSize = file.ReadLine();

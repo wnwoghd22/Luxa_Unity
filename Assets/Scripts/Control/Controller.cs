@@ -63,30 +63,33 @@ public class Controller : MonoBehaviour {
         {
             Touch touch = Input.GetTouch(0);
 
-            Vector3 touchPos = Camera.main.ScreenToWorldPoint(touch.position);
-
-            if (GetComponent<Collider2D>() == Physics2D.OverlapPoint(touchPos))
-            {
-
-            }
-
             switch (touch.phase)
             {
                 case TouchPhase.Began:
-                    //_startingPosition = touch.position.x;
+                    Vector3 touchPos = Camera.main.ScreenToWorldPoint(touch.position);
+                    Vector2 pos = new Vector2(touchPos.x, touchPos.y);
+                    Collider2D[] hits = Physics2D.OverlapPointAll(pos);
+
+                    if (hits.Length == 1)
+                    {
+                        currentActivated = hits[0].gameObject.GetComponent<RingObject>();
+                        initialPos = pos;
+                        gm.SetRingActivate(currentActivated.Index);
+                    }
                     break;
                 case TouchPhase.Moved:
-                    // if (startingPosition > touch.position.x)
-                    // {
-                    //     transform.Rotate(Vector3.back, -turnspeed * Time.deltaTime);
-                    // }
-                    // else if (startingPosition < touch.position.x)
-                    // {
-                    //     transform.Rotate(Vector3.back, rotatespeed * Time.deltaTime);
-                    // }
                     break;
                 case TouchPhase.Ended:
-                    Debug.Log("Touch Phase Ended.");
+                    touchPos = Camera.main.ScreenToWorldPoint(touch.position);
+                    pos = new Vector2(touchPos.x, touchPos.y);
+
+                    if (currentActivated)
+                    {
+                        endPos = pos;
+                        currentActivated.SetAlpha(0.3f);
+                        currentActivated.SetActive(false);
+                        Rotate();
+                    }
                     break;
             }
         }
