@@ -3,7 +3,7 @@
     "m_SelectedPackage": {
         "deviceId": "R3CN5045DGM",
         "name": "com.Jay.Luxa",
-        "processId": 10469,
+        "processId": 14486,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -24,6 +24,12 @@
             "deviceId": "R3CN5045DGM",
             "name": "com.Jay.Luxa",
             "processId": 10469,
+            "exited": false
+        },
+        {
+            "deviceId": "R3CN5045DGM",
+            "name": "com.Jay.Luxa",
+            "processId": 14486,
             "exited": false
         }
     ],

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class FileManager {
     public Board ReadStageFileForLocal(int n) {
         string os = SystemInfo.operatingSystem;
 
         string filePath = "";
+        StreamReader file;
 
         //filePath = Path.Combine(Application.streamingAssetsPath, "Stages/" + n + ".txt");
 
@@ -19,8 +21,9 @@ public class FileManager {
         else if (os.Contains("Android"))
         {
             filePath = "jar:file://" + Application.dataPath + "!/assets/Stages/" + n;
+            file = new UnityWebRequest(filePath).SendWebRequest().;
         }
-        StreamReader file = new StreamReader(filePath);
+         = new StreamReader(filePath);
 
         string boardSize = file.ReadLine();
         string[] size = boardSize.Split(' ');
