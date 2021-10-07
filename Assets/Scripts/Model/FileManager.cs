@@ -2,28 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
 public class FileManager {
-    public Board ReadStageFileForLocal(int n) {
+    public Board ReadStageFile(int n)
+    {
+        Board result = null;
+
+        RuntimePlatform platform = Application.platform;
+        switch(platform)
+        {
+            case RuntimePlatform.Android:
+                result = ReadStageFileForAndroid(n);
+                break;
+            case RuntimePlatform.WindowsEditor:
+            case RuntimePlatform.WindowsPlayer:
+                result = ReadStageFileForLocal(n);
+                break;
+        }
+
+        return result;
+    }
+    private Board ReadStageFileForLocal(int n) {
         string os = SystemInfo.operatingSystem;
 
-        string filePath = "";
-        StreamReader file;
-
-        //filePath = Path.Combine(Application.streamingAssetsPath, "Stages/" + n + ".txt");
-
-        if (os.Contains("Windows"))
-        {
-            filePath = Path.Combine(Application.streamingAssetsPath, "Stages/" + n + ".txt");
-        }
-        else if (os.Contains("Android"))
-        {
-            filePath = "jar:file://" + Application.dataPath + "!/assets/Stages/" + n;
-            file = new UnityWebRequest(filePath).SendWebRequest().;
-        }
-         = new StreamReader(filePath);
+        string filePath = Path.Combine(Application.streamingAssetsPath, "Stages/" + n + ".txt");
+        StreamReader file = new StreamReader(filePath);
 
         string boardSize = file.ReadLine();
         string[] size = boardSize.Split(' ');
@@ -56,19 +62,54 @@ public class FileManager {
 
         return b;
     }
-    public Board ReadStageFileForAndroid(int n) {
-        //string filePath = Path.Combine(Application.streamingAssetsPath, "Stages/" + n + ".txt");
-        //StreamReader file = new StreamReader(filePath);
+    private Board ReadStageFileForAndroid(int n) {
 
-        //string boardSize = file.ReadLine();
-        //string[] size = boardSize.Split(' ');
+        string filePath = "jar:file://" + Application.dataPath + "!/assets/Stages/" + n + ".txt";
+        var request = UnityWebRequest.Get(filePath);
+        request.SendWebRequest();
+        if (request.isDone)
+            Debug.Log(request.downloadHandler.data);
 
-        //Board b = new Board(Convert.ToInt32(size[0]), Convert.ToInt32(size[1]));
+        Debug.Log(Encoding.Default.GetString(request.downloadHandler.data));
+        string[] fileString = Encoding.Default.GetString(request.downloadHandler.data).Split('\n');
+        int idx = 0;
 
-        //Debug.Log(size[0] + size[1]);
+        Debug.Log("FileManager.cs 76 : " + fileString.Length);
+        for (int i = 0; i < fileString.Length; ++i)
+        {
+            //Debug.Assert(true);
+            Debug.Log(i + ", " + fileString[i]);
+        }
 
-        //return b;
+        string[] size = fileString[idx++].Split(' ');
 
-        return null;
+        Board b = new Board(Convert.ToInt32(size[0]), Convert.ToInt32(size[1]));
+
+        int beadNum = Convert.ToInt32(fileString[idx++]);
+        while (beadNum-- > 0)
+        {
+            string[] beadInfo = fileString[idx++].Split(' ');
+            b.SetBeads(
+                Convert.ToInt32(beadInfo[0]),
+                Convert.ToInt32(beadInfo[1]),
+                Convert.ToInt32(beadInfo[2]),
+                Convert.ToInt32(beadInfo[3]),
+                Convert.ToInt32(beadInfo[4])
+            );
+        }
+
+        int ringNum = Convert.ToInt32(fileString[idx++]);
+        for (int i = 0; i < ringNum; ++i)
+        {
+            string[] ringInfo = fileString[idx++].Split(' ');
+            b.AddRing(
+                Convert.ToInt32(ringInfo[0]),
+                Convert.ToInt32(ringInfo[1]),
+                Convert.ToInt32(ringInfo[2]),
+                i
+            );
+        }
+
+        return b;
     } 
 }

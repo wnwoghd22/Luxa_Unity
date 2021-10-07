@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
 
     public void InitializeStage(int n)
     {
-        board = fm.ReadStageFileForLocal(n);
+        board = fm.ReadStageFile(n);
         viewer.CreateBoard(board);
     }
 
