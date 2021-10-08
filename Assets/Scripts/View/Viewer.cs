@@ -36,10 +36,10 @@ public class Viewer : MonoBehaviour {
         beadInstances = new BeadObject[_row, _col];
 
         unit = (float)Camera.main.orthographicSize / (_col + 2);
-        Debug.Log(Camera.main.orthographicSize);
+        //Debug.Log(Camera.main.orthographicSize);
         offsetX = - unit * (_col - 1) / 2;
         offsetY = unit * (_row - 1) * Mathf.Sqrt(3) / 4;
-        Debug.Log(_col + " " + _row + " " + offsetX + " " + offsetY + " " + unit);
+        //Debug.Log(_col + " " + _row + " " + offsetX + " " + offsetY + " " + unit);
 
         for (int i = 0; i < _row; ++i)
         {
