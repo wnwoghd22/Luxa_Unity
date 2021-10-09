@@ -11,6 +11,11 @@ public class UIManager : MonoBehaviour
     GameObject gameUI;
 
     [SerializeField]
+    Text titleStageNum;
+    [SerializeField]
+    Text packNum;
+
+    [SerializeField]
     Text stageNum;
     [SerializeField]
     Text rotateCount;
@@ -29,6 +34,9 @@ public class UIManager : MonoBehaviour
 
     public void SetTitleUIActive(bool b) => titleUI.SetActive(b);
     public void SetGameUIActive(bool b) => gameUI.SetActive(b);
+
+    public void SetTitleStageNum(int n) => titleStageNum.text = "" + n;
+    public void SetPackNum(int n) => packNum.text = "" + n;
 
     public void SetStageNum(int n) => stageNum.text = "" + n;
     public void SetStageNum(string s) => stageNum.text = s;

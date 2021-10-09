@@ -29,7 +29,53 @@ public class Viewer : MonoBehaviour {
     }
     public void CreateTitleBoard()
     {
+        _row = 3; _col = 4;
+        beadInstances = new BeadObject[_row, _col];
+        unit = (float)Camera.main.orthographicSize / (_col + 2);
+        offsetX = -unit * (_col - 1) / 2;
+        offsetY = unit * (_row - 1) * Mathf.Sqrt(3) / 4;
+        int leftColor = Random.Range(0, 3), rightColor = Random.Range(0, 3);
+        while (leftColor == rightColor) rightColor = Random.Range(0, 3); //assign different color
 
+        for (int i = 0; i < _col - 1; ++i)
+        {
+            beadInstances[0, i] = Instantiate(beadPrefab, new Vector3(0, 0, 0), Quaternion.identity).GetComponent<BeadObject>();
+            beadInstances[0, i].SetGridPos(offsetX, offsetY, unit, 0, i);
+            beadInstances[0, i].SetColor(
+                (i != 2 && leftColor == 0) || (i != 0 && rightColor == 0) ? 1 : 0,
+                (i != 2 && leftColor == 1) || (i != 0 && rightColor == 1) ? 1 : 0,
+                (i != 2 && leftColor == 2) || (i != 0 && rightColor == 2) ? 1 : 0
+            );
+        }
+        for (int i = 0; i < _col; ++i)
+        {
+            beadInstances[1, i] = Instantiate(beadPrefab, new Vector3(0, 0, 0), Quaternion.identity).GetComponent<BeadObject>();
+            beadInstances[1, i].SetGridPos(offsetX, offsetY, unit, 1, i);
+            beadInstances[1, i].SetColor(
+                (i != 3 && leftColor == 0) || (i != 0 && rightColor == 0) ? 1 : 0,
+                (i != 3 && leftColor == 1) || (i != 0 && rightColor == 1) ? 1 : 0,
+                (i != 3 && leftColor == 2) || (i != 0 && rightColor == 2) ? 1 : 0
+            );
+        }
+        for (int i = 0; i < _col - 1; ++i)
+        {
+            beadInstances[2, i] = Instantiate(beadPrefab, new Vector3(0, 0, 0), Quaternion.identity).GetComponent<BeadObject>();
+            beadInstances[2, i].SetGridPos(offsetX, offsetY, unit, 2, i);
+            beadInstances[2, i].SetColor(
+                (i != 2 && leftColor == 0) || (i != 0 && rightColor == 0) ? 1 : 0,
+                (i != 2 && leftColor == 1) || (i != 0 && rightColor == 1) ? 1 : 0,
+                (i != 2 && leftColor == 2) || (i != 0 && rightColor == 2) ? 1 : 0
+            );
+        }
+
+        ringInstances = new RingObject[2];
+        for (int i = 0; i < 2; ++i)
+        {
+            ringInstances[i] = Instantiate(ringPrefab, new Vector3(0, 0, 0), Quaternion.identity).GetComponent<RingObject>();
+            ringInstances[i].SetGridPos(offsetX, offsetY, unit, 1, 1 + i, 1);
+            ringInstances[i].SetColor(i == 0 ? leftColor : rightColor);
+            ringInstances[i].SetIndex(i);
+        }
     }
 
     public void CreateBoard(Board b) {

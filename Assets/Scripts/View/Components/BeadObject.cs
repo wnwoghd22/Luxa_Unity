@@ -14,7 +14,7 @@ public class BeadObject : BoardObject
     {
         originPos = transform.position;
         Vector3 v = originPos - center;
-        Debug.Log(originPos + " " + center + " " + v);
+        //Debug.Log(originPos + " " + center + " " + v);
         originAngle = Mathf.Atan2(v.y, v.x);
         //originAngle = angle;
     }
@@ -39,7 +39,7 @@ public class BeadObject : BoardObject
 
     public void UpdatePosition(float angle, Vector3 center)
     {
-        Debug.Log(angle + " " + originAngle + " " + center);
+        //Debug.Log(angle + " " + originAngle + " " + center);
         //float theta = angle + angleOffset;
         float theta = angle;// + originAngle;
         Vector3 normalized = originPos - center;

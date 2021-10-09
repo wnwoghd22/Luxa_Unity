@@ -10,8 +10,14 @@ public class GameManager : MonoBehaviour
     Board board;
     Viewer viewer;
     int stageNum;
+    public int StageNum
+    {
+        get => stageNum;
+        private set => stageNum = value <= 1 ? 1 : value;
+    }
     int rotateCount;
     List<(int, bool)> playLog;
+    Scene activeScene;
 
     private void Awake()
     {
@@ -25,21 +31,68 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        viewer = FindObjectOfType<Viewer>();
-        ui = FindObjectOfType<UIManager>();
+        //viewer = FindObjectOfType<Viewer>();
+        //ui = FindObjectOfType<UIManager>();
 
-        Scene activeScene = SceneManager.GetActiveScene();
+        //activeScene = SceneManager.GetActiveScene();
+        //Debug.Log(activeScene.name);
+        //if (activeScene.name == "Title")
+        //{
+        //    ui.SetTitleUIActive(true);
+        //    ui.SetGameUIActive(false);
+        //    InitializeTitle();
+        //}
+        //else if (activeScene.name == "GameScene")
+        //{
+        //    ui.SetTitleUIActive(false);
+        //    ui.SetGameUIActive(true);
+        //    InitializeStage(StageNum);
+        //}
+    }
+
+    /* deprecated
+    private void OnLevelWasLoaded(int level)
+    {
+        activeScene = SceneManager.GetActiveScene();
+        Debug.Log(activeScene.name);
         if (activeScene.name == "Title")
         {
             ui.SetTitleUIActive(true);
             ui.SetGameUIActive(false);
-            //InitializeStage(1);
+            InitializeTitle();
         }
         else if (activeScene.name == "GameScene")
         {
             ui.SetTitleUIActive(false);
             ui.SetGameUIActive(true);
-            InitializeStage(1);
+            InitializeStage(StageNum);
+        }
+    } */
+    void OnEnable() => SceneManager.sceneLoaded += OnLevelFinishedLoading;
+    void OnDisable() => SceneManager.sceneLoaded -= OnLevelFinishedLoading;
+    void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
+    {
+        //Debug.Log("Level Loaded");
+        //Debug.Log(scene.name);
+        //Debug.Log(mode);
+
+        activeScene = scene;
+        //Debug.Log(activeScene.name);
+        if (activeScene.name == "Title")
+        {
+            if (viewer == null)
+                viewer = FindObjectOfType<Viewer>();
+            if (ui == null)
+                ui = FindObjectOfType<UIManager>();
+            ui.SetTitleUIActive(true);
+            ui.SetGameUIActive(false);
+            InitializeTitle();
+        }
+        else if (activeScene.name == "GameScene")
+        {
+            ui.SetTitleUIActive(false);
+            ui.SetGameUIActive(true);
+            InitializeStage(StageNum);
         }
     }
 
@@ -52,6 +105,8 @@ public class GameManager : MonoBehaviour
         viewer.CreateTitleBoard();
         stageNum = 1;
         rotateCount = 0;
+        ui.SetTitleStageNum(stageNum);
+        ui.SetPackNum(1);
     }
     public void InitializeStage(int n)
     {
@@ -72,14 +127,33 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            ++rotateCount;
-            ui.SetRotateCount("" + rotateCount);
-            playLog.Add((index, zeta < 0));
-            //foreach ((int, bool) item in playLog) Debug.Log(item);
-            board.Rotate(index, zeta < 0);
-            viewer.UpdateBoard(index, zeta < 0);
+            if (activeScene.name == "Title") UpdateBoardForTitle(index, zeta);
+            else if (activeScene.name == "GameScene")UpdateBoardForGameScene(index, zeta);
         }
     }
+    public void UpdateBoardForTitle(int index, float zeta)
+    {
+        if (index == 0)
+        {
+            //set packNum
+        }
+        else if (index == 1)
+        {
+            StageNum += zeta < 0 ? 1 : -1;
+            ui.SetTitleStageNum(StageNum);
+        }
+        viewer.UpdateBoard(index, zeta < 0);
+    }
+    public void UpdateBoardForGameScene(int index, float zeta)
+    {
+        ++rotateCount;
+        ui.SetRotateCount("" + rotateCount);
+        playLog.Add((index, zeta < 0));
+        //foreach ((int, bool) item in playLog) Debug.Log(item);
+        board.Rotate(index, zeta < 0);
+        viewer.UpdateBoard(index, zeta < 0);
+    }
+
     public void SetRingActivate(int i) => viewer.SetRingActivate(i);
 
     public void Undo()
@@ -93,5 +167,10 @@ public class GameManager : MonoBehaviour
         ui.SetRotateCount("" + rotateCount);
         board.Rotate(lastMove.Item1, !lastMove.Item2);
         viewer.UpdateBoard(lastMove.Item1, !lastMove.Item2);
+    }
+
+    public void MoveToGameScene()
+    {
+        SceneManager.LoadScene("GameScene");
     }
 }

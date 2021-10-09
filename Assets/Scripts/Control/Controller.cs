@@ -6,7 +6,7 @@ public class Controller : MonoBehaviour {
     //public float rotatespeed = 10f;
     //private float _startingPosition;
 
-    private bool onTouch = false;
+    //private bool onTouch = false;
 
     private RingObject currentActivated;
 
