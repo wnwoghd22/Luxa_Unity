@@ -6,6 +6,11 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     [SerializeField]
+    GameObject titleUI;
+    [SerializeField]
+    GameObject gameUI;
+
+    [SerializeField]
     Text stageNum;
     [SerializeField]
     Text rotateCount;
@@ -22,16 +27,10 @@ public class UIManager : MonoBehaviour
         
     }
 
-    public void SetStageNum(int n)
-    {
-        stageNum.text = "" + n;
-    }
-    public void SetStageNum(string s)
-    {
-        stageNum.text = s;
-    }
-    public void SetRotateCount(string s)
-    {
-        rotateCount.text = s;
-    }
+    public void SetTitleUIActive(bool b) => titleUI.SetActive(b);
+    public void SetGameUIActive(bool b) => gameUI.SetActive(b);
+
+    public void SetStageNum(int n) => stageNum.text = "" + n;
+    public void SetStageNum(string s) => stageNum.text = s;
+    public void SetRotateCount(string s) => rotateCount.text = s;
 }

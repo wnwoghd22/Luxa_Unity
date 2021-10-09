@@ -27,6 +27,10 @@ public class Viewer : MonoBehaviour {
     {
         
     }
+    public void CreateTitleBoard()
+    {
+
+    }
 
     public void CreateBoard(Board b) {
         Whole[,] _board = b.GetBoard();

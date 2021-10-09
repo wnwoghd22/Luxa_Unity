@@ -107,6 +107,6 @@ public class Controller : MonoBehaviour {
         //Debug.Log(initialPos + " " + endPos + center + zeta);
         //if (Mathf.Abs(zeta) < 1f) return;
 
-        gm.ViewerUpdate(_index, zeta);
+        gm.BoardUpdate(_index, zeta);
     }
 }
