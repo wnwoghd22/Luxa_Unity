@@ -5,6 +5,7 @@ using System;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+using System.Threading.Tasks;
 
 public class FileManager {
     public Board ReadStageFile(int n)
@@ -15,7 +16,8 @@ public class FileManager {
         switch(platform)
         {
             case RuntimePlatform.Android:
-                result = ReadStageFileForAndroid(n);
+                Debug.Log("read file for android");
+                result = ReadStageFileForAndroid(n).Result;
                 break;
             case RuntimePlatform.WindowsEditor:
             case RuntimePlatform.WindowsPlayer:
@@ -62,19 +64,25 @@ public class FileManager {
 
         return b;
     }
-    private Board ReadStageFileForAndroid(int n) {
+    private async Task<Board> ReadStageFileForAndroid(int n) {
+        Board b = null;
 
         string filePath = "jar:file://" + Application.dataPath + "!/assets/Stages/" + n + ".txt";
-        var request = UnityWebRequest.Get(filePath);
-        request.SendWebRequest();
-        if (request.isDone)
-            Debug.Log(request.downloadHandler.data);
+        using var request = UnityWebRequest.Get(filePath);
+        var operation = request.SendWebRequest();
+        while (!operation.isDone)
+        {
+            Debug.Log("not yet");
+            await Task.Yield();
+        }
 
-        Debug.Log(Encoding.Default.GetString(request.downloadHandler.data));
+        Debug.Log("Done");
+
+        //Debug.Log(Encoding.Default.GetString(request.downloadHandler.data));
         string[] fileString = Encoding.Default.GetString(request.downloadHandler.data).Split('\n');
         int idx = 0;
 
-        Debug.Log("FileManager.cs 76 : " + fileString.Length);
+        //Debug.Log("FileManager.cs 76 : " + fileString.Length);
         for (int i = 0; i < fileString.Length; ++i)
         {
             //Debug.Assert(true);
@@ -83,7 +91,7 @@ public class FileManager {
 
         string[] size = fileString[idx++].Split(' ');
 
-        Board b = new Board(Convert.ToInt32(size[0]), Convert.ToInt32(size[1]));
+        b = new Board(Convert.ToInt32(size[0]), Convert.ToInt32(size[1]));
 
         int beadNum = Convert.ToInt32(fileString[idx++]);
         while (beadNum-- > 0)

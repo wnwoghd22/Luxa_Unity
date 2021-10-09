@@ -25,7 +25,7 @@ public class Controller : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        //HandleTouch();
+        HandleTouch();
         HandleClick();
     }
     private void HandleClick()

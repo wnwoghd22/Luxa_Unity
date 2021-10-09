@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
         //Debug.Log(mode);
 
         activeScene = scene;
-        //Debug.Log(activeScene.name);
+        Debug.Log(activeScene.name);
         if (activeScene.name == "Title")
         {
             if (viewer == null)
@@ -169,8 +169,6 @@ public class GameManager : MonoBehaviour
         viewer.UpdateBoard(lastMove.Item1, !lastMove.Item2);
     }
 
-    public void MoveToGameScene()
-    {
-        SceneManager.LoadScene("GameScene");
-    }
+    public void MoveToGameScene() => SceneManager.LoadScene("GameScene");
+    public void BackToTitle() => SceneManager.LoadScene("Title");
 }
