@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     Board board;
     public void SetBoard(Board b) => board = b;
     Viewer viewer;
-    int stageNum;
+    int stageNum = 1;
     public int StageNum
     {
         get => stageNum;
@@ -106,28 +106,22 @@ public class GameManager : MonoBehaviour
     public void InitializeTitle()
     {
         viewer.CreateTitleBoard();
-        stageNum = 1;
+        //stageNum = 1;
         rotateCount = 0;
         ui.SetTitleStageNum(stageNum);
         ui.SetPackNum(1);
     }
     public IEnumerator InitializeStage(int n)
     {
+        board = null;
+
         StartCoroutine(fm.ReadStageFile(n));
 
-        //yield return new WaitUntil(() => board != null);
-
-        //Debug.Log(board.GetBoard().Length);
-
-        while (board == null)
-        {
-            Debug.Log("wait");
-            yield return null;
-        }
+        while (board == null) yield return null;
 
         viewer.CreateBoard(board);
         ui.SetStageNum(n);
-        stageNum = n;
+        //stageNum = n;
         rotateCount = 0;
         ui.SetRotateCount("" + 0);
         playLog = new List<(int, bool)>();
