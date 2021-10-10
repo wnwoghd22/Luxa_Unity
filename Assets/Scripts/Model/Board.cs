@@ -21,10 +21,11 @@ public class Board
 
     public void Rotate(int ring, bool dir) => rings[ring].rotate(board, dir);
 
-    public bool GetComplete() {
+    private bool GetComplete() {
 		bool result = true;
 		foreach (Ring r in rings) if (!r.GetComplete(board)) return false;
 
 		return result;
 	}
+	public bool isComplete { get => GetComplete(); }
 }

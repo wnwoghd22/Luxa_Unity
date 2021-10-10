@@ -19,6 +19,15 @@ public class GameManager : MonoBehaviour
     int rotateCount;
     List<(int, bool)> playLog;
     Scene activeScene;
+    bool isComplete
+    {
+        get
+        {
+            if (board == null) return false;
+            else return board.isComplete;
+        }
+    }
+    WaitUntil isSolved;
 
     private void Awake()
     {
@@ -29,56 +38,16 @@ public class GameManager : MonoBehaviour
         }
         else Destroy(gameObject);
     }
-
     void Start()
     {
-        //viewer = FindObjectOfType<Viewer>();
-        //ui = FindObjectOfType<UIManager>();
-
-        //activeScene = SceneManager.GetActiveScene();
-        //Debug.Log(activeScene.name);
-        //if (activeScene.name == "Title")
-        //{
-        //    ui.SetTitleUIActive(true);
-        //    ui.SetGameUIActive(false);
-        //    InitializeTitle();
-        //}
-        //else if (activeScene.name == "GameScene")
-        //{
-        //    ui.SetTitleUIActive(false);
-        //    ui.SetGameUIActive(true);
-        //    InitializeStage(StageNum);
-        //}
+        isSolved = new WaitUntil(() => isComplete);
     }
 
-    /* deprecated
-    private void OnLevelWasLoaded(int level)
-    {
-        activeScene = SceneManager.GetActiveScene();
-        Debug.Log(activeScene.name);
-        if (activeScene.name == "Title")
-        {
-            ui.SetTitleUIActive(true);
-            ui.SetGameUIActive(false);
-            InitializeTitle();
-        }
-        else if (activeScene.name == "GameScene")
-        {
-            ui.SetTitleUIActive(false);
-            ui.SetGameUIActive(true);
-            InitializeStage(StageNum);
-        }
-    } */
     void OnEnable() => SceneManager.sceneLoaded += OnLevelFinishedLoading;
     void OnDisable() => SceneManager.sceneLoaded -= OnLevelFinishedLoading;
     void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
     {
-        //Debug.Log("Level Loaded");
-        //Debug.Log(scene.name);
-        //Debug.Log(mode);
-
         activeScene = scene;
-        Debug.Log(activeScene.name);
         if (activeScene.name == "Title")
         {
             if (fm == null)
@@ -103,7 +72,7 @@ public class GameManager : MonoBehaviour
     {
         
     }
-    public void InitializeTitle()
+    private void InitializeTitle()
     {
         viewer.CreateTitleBoard();
         //stageNum = 1;
@@ -111,7 +80,7 @@ public class GameManager : MonoBehaviour
         ui.SetTitleStageNum(stageNum);
         ui.SetPackNum(1);
     }
-    public IEnumerator InitializeStage(int n)
+    private IEnumerator InitializeStage(int n)
     {
         board = null;
         ui.SetStageNum(n);
@@ -136,7 +105,7 @@ public class GameManager : MonoBehaviour
         else
         {
             if (activeScene.name == "Title") UpdateBoardForTitle(index, zeta);
-            else if (activeScene.name == "GameScene")UpdateBoardForGameScene(index, zeta);
+            else if (activeScene.name == "GameScene") UpdateBoardForGameScene(index, zeta);
         }
     }
     public void UpdateBoardForTitle(int index, float zeta)
@@ -154,15 +123,27 @@ public class GameManager : MonoBehaviour
     }
     public void UpdateBoardForGameScene(int index, float zeta)
     {
+        if (isComplete) return;
+
         ++rotateCount;
         ui.SetRotateCount("" + rotateCount);
         playLog.Add((index, zeta < 0));
         //foreach ((int, bool) item in playLog) Debug.Log(item);
         board.Rotate(index, zeta < 0);
         viewer.UpdateBoard(index, zeta < 0);
+
+        if (isComplete)
+        {
+            ui.SetRotateCountWithCheck(rotateCount);
+            StartCoroutine(MoveToNextLevelCoroutine());
+        }
     }
 
-    public void SetRingActivate(int i) => viewer.SetRingActivate(i);
+    public void SetRingActivate(int i)
+    {
+        if (isComplete) return;
+        viewer.SetRingActivate(i);
+    }
 
     public void Undo()
     {
@@ -179,4 +160,18 @@ public class GameManager : MonoBehaviour
 
     public void MoveToGameScene() => SceneManager.LoadScene("GameScene");
     public void BackToTitle() => SceneManager.LoadScene("Title");
+
+    public void NextStage() => StartCoroutine(InitializeStage(++StageNum));
+    public void PreviousStage() => StartCoroutine(InitializeStage(--StageNum));
+    public void RestartStage() => StartCoroutine(InitializeStage(StageNum));
+
+    private IEnumerator MoveToNextLevelCoroutine()
+    {
+        //effect
+
+        yield return new WaitForSeconds(0.3f);
+
+        NextStage();
+    }
+
 }

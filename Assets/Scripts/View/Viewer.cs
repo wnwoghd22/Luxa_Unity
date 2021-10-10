@@ -29,6 +29,8 @@ public class Viewer : MonoBehaviour {
     }
     public void CreateTitleBoard()
     {
+        DestroyBoard();
+
         _row = 3; _col = 4;
         beadInstances = new BeadObject[_row, _col];
         unit = (float)Camera.main.orthographicSize / (_col + 2);
@@ -79,6 +81,8 @@ public class Viewer : MonoBehaviour {
     }
 
     public void CreateBoard(Board b) {
+        DestroyBoard();
+
         Whole[,] _board = b.GetBoard();
         _row = _board.GetLength(0);
         _col = _board.GetLength(1);
@@ -115,7 +119,14 @@ public class Viewer : MonoBehaviour {
             ringInstances[i].SetColor(rings[i].Color);
             ringInstances[i].SetIndex(i);
         }
-        
+    }
+
+    public void DestroyBoard()
+    {
+        if (beadInstances != null)
+            foreach (BeadObject bead in beadInstances) if (bead != null) Destroy(bead.gameObject);
+        if (ringInstances != null)
+            foreach (RingObject ring in ringInstances) if (ring != null) Destroy(ring.gameObject);
     }
 
     public void UpdateBoard(int index, bool dir)
