@@ -8,7 +8,7 @@ public class test_read : MonoBehaviour
     void Start()
     {
         FileManager fm = new FileManager();
-        fm.ReadStageFile(1);
+        //.ReadStageFile(1);
     }
 
     // Update is called once per frame

@@ -5,9 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    FileManager fm = new FileManager();
+    FileManager fm;
     UIManager ui;
     Board board;
+    public void SetBoard(Board b) => board = b;
     Viewer viewer;
     int stageNum;
     public int StageNum
@@ -80,6 +81,8 @@ public class GameManager : MonoBehaviour
         Debug.Log(activeScene.name);
         if (activeScene.name == "Title")
         {
+            if (fm == null)
+                fm = FindObjectOfType<FileManager>();
             if (viewer == null)
                 viewer = FindObjectOfType<Viewer>();
             if (ui == null)
@@ -92,7 +95,7 @@ public class GameManager : MonoBehaviour
         {
             ui.SetTitleUIActive(false);
             ui.SetGameUIActive(true);
-            InitializeStage(StageNum);
+            StartCoroutine(InitializeStage(StageNum));
         }
     }
 
@@ -108,9 +111,20 @@ public class GameManager : MonoBehaviour
         ui.SetTitleStageNum(stageNum);
         ui.SetPackNum(1);
     }
-    public void InitializeStage(int n)
+    public IEnumerator InitializeStage(int n)
     {
-        board = fm.ReadStageFile(n);
+        StartCoroutine(fm.ReadStageFile(n));
+
+        //yield return new WaitUntil(() => board != null);
+
+        //Debug.Log(board.GetBoard().Length);
+
+        while (board == null)
+        {
+            Debug.Log("wait");
+            yield return null;
+        }
+
         viewer.CreateBoard(board);
         ui.SetStageNum(n);
         stageNum = n;
