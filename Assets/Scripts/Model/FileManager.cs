@@ -75,6 +75,8 @@ public class FileManager :MonoBehaviour {
     }
     private IEnumerator ReadStageFileForAndroidCoroutine(int n)
     {
+        Debug.Log("read file num " + n);
+
         string filePath = "jar:file://" + Application.dataPath + "!/assets/Stages/" + n + ".txt";
         using var request = UnityWebRequest.Get(filePath);
         var operation = request.SendWebRequest();
@@ -87,15 +89,16 @@ public class FileManager :MonoBehaviour {
         Debug.Log("Done");
 
         //Debug.Log(Encoding.Default.GetString(request.downloadHandler.data));
-        string[] fileString = Encoding.Default.GetString(request.downloadHandler.data).Split('\n');
+        string[] fileString = request.downloadHandler.text.Split('\n');
+        //string[] fileString = Encoding.Default.GetString(request.downloadHandler.data).Split('\n');
         int idx = 0;
 
         //Debug.Log("FileManager.cs 76 : " + fileString.Length);
-        for (int i = 0; i < fileString.Length; ++i)
-        {
-            //Debug.Assert(true);
-            Debug.Log(i + ", " + fileString[i]);
-        }
+        //for (int i = 0; i < fileString.Length; ++i)
+        //{
+        //    Debug.Assert(true);
+        //    Debug.Log(i + ", " + fileString[i]);
+        //}
 
         string[] size = fileString[idx++].Split(' ');
 

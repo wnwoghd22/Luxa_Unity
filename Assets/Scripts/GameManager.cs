@@ -114,17 +114,17 @@ public class GameManager : MonoBehaviour
     public IEnumerator InitializeStage(int n)
     {
         board = null;
+        ui.SetStageNum(n);
+        rotateCount = 0;
+        ui.SetRotateCount("" + 0);
+        playLog = new List<(int, bool)>();
 
         StartCoroutine(fm.ReadStageFile(n));
 
         while (board == null) yield return null;
 
         viewer.CreateBoard(board);
-        ui.SetStageNum(n);
         //stageNum = n;
-        rotateCount = 0;
-        ui.SetRotateCount("" + 0);
-        playLog = new List<(int, bool)>();
     }
 
     public void BoardUpdate(int index, float zeta)
