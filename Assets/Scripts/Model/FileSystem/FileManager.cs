@@ -8,13 +8,13 @@ using UnityEngine.Networking;
 using System.Threading.Tasks;
 
 public class FileManager :MonoBehaviour {
-    private GameManager gm;
+    [SerializeField] private GameManager gm;
     private WaitForFixedUpdate waitForUpdate = new WaitForFixedUpdate();
     private WaitForFixedUpdate wait { get { return waitForUpdate; } }
 
     private void Start()
     {
-        gm = FindObjectOfType<GameManager>();
+        //gm = FindObjectOfType<GameManager>();
     }
 
     public IEnumerator ReadStageFile(int n)
@@ -75,30 +75,13 @@ public class FileManager :MonoBehaviour {
     }
     private IEnumerator ReadStageFileForAndroidCoroutine(int n)
     {
-        Debug.Log("read file num " + n);
-
         string filePath = "jar:file://" + Application.dataPath + "!/assets/Stages/" + n + ".txt";
         using var request = UnityWebRequest.Get(filePath);
         var operation = request.SendWebRequest();
-        while (!operation.isDone)
-        {
-            Debug.Log("not yet");
-            yield return null;
-        }
+        while (!operation.isDone)yield return null;
 
-        Debug.Log("Done");
-
-        //Debug.Log(Encoding.Default.GetString(request.downloadHandler.data));
         string[] fileString = request.downloadHandler.text.Split('\n');
-        //string[] fileString = Encoding.Default.GetString(request.downloadHandler.data).Split('\n');
         int idx = 0;
-
-        //Debug.Log("FileManager.cs 76 : " + fileString.Length);
-        //for (int i = 0; i < fileString.Length; ++i)
-        //{
-        //    Debug.Assert(true);
-        //    Debug.Log(i + ", " + fileString[i]);
-        //}
 
         string[] size = fileString[idx++].Split(' ');
 
@@ -189,4 +172,68 @@ public class FileManager :MonoBehaviour {
 
         return b;
     } 
+
+    public void ReadSaveFile()
+    {
+        RuntimePlatform platform = Application.platform;
+        switch (platform)
+        {
+            case RuntimePlatform.Android:
+                Debug.Log("read file for android");
+                break;
+            case RuntimePlatform.WindowsEditor:
+            case RuntimePlatform.WindowsPlayer:
+                Debug.Log("read file for local");
+                gm.SetData(ReadSaveFileForLocal());
+                break;
+        }
+    }
+    public void WriteSaveFile()
+    {
+        RuntimePlatform platform = Application.platform;
+        switch (platform)
+        {
+            case RuntimePlatform.Android:
+                Debug.Log("write file for android");
+                break;
+            case RuntimePlatform.WindowsEditor:
+            case RuntimePlatform.WindowsPlayer:
+                Debug.Log("write file for local");
+                WriteSaveFileForLocal(gm.Data);
+                break;
+        }
+    }
+    private SaveData ReadSaveFileForLocal()
+    {
+        string filePath = Application.persistentDataPath + "/save.json";
+        Debug.Log(filePath);
+
+        if (!File.Exists(filePath))
+        {
+            Debug.Log("No file!");
+            return null;
+        }
+
+        StreamReader saveFile = new StreamReader(filePath);
+
+        SaveData data = JsonUtility.FromJson<SaveData>(saveFile.ReadToEnd());
+
+        Debug.Log(data);
+
+        if (data != null)
+            Debug.Log(data.LastPackNum + " " + data.LastStageNum);
+
+        return data;
+    }
+    private void WriteSaveFileForLocal(SaveData data)
+    {
+        string filePath = Application.persistentDataPath + "/save.json";
+
+        StreamWriter saveFile = new StreamWriter(filePath);
+
+        Debug.Log(JsonUtility.ToJson(data));
+
+        saveFile.Write(JsonUtility.ToJson(data));
+        saveFile.Close();
+    }
 }

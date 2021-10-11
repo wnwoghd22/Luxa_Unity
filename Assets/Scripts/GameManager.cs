@@ -10,11 +10,13 @@ public class GameManager : MonoBehaviour
     Board board;
     public void SetBoard(Board b) => board = b;
     Viewer viewer;
-    int stageNum = 1;
+    //int stageNum = 1;
+    SaveData data;
+    public SaveData Data => data;
     public int StageNum
     {
-        get => stageNum;
-        private set => stageNum = value <= 1 ? 1 : value;
+        get => data.LastStageNum;
+        private set => data.LastStageNum = value <= 1 ? 1 : value;
     }
     int rotateCount;
     List<(int, bool)> playLog;
@@ -74,12 +76,18 @@ public class GameManager : MonoBehaviour
     }
     private void InitializeTitle()
     {
+        fm.ReadSaveFile();
+
+
         viewer.CreateTitleBoard();
-        //stageNum = 1;
+        //StageNum = data.LastStageNum;
+        
         rotateCount = 0;
-        ui.SetTitleStageNum(stageNum);
+        ui.SetTitleStageNum(StageNum);
         ui.SetPackNum(1);
     }
+    public void SetData(SaveData data) => this.data = data == null ? new SaveData() : data;
+
     private IEnumerator InitializeStage(int n)
     {
         board = null;
@@ -87,6 +95,8 @@ public class GameManager : MonoBehaviour
         rotateCount = 0;
         ui.SetRotateCount("" + 0);
         playLog = new List<(int, bool)>();
+
+        fm.WriteSaveFile();
 
         StartCoroutine(fm.ReadStageFile(n));
 

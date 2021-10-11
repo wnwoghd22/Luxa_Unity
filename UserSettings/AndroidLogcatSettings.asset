@@ -1,9 +1,9 @@
 {
-    "m_SelectedDeviceId": "R3CN5045DGM",
+    "m_SelectedDeviceId": "R59M60EXQ1B",
     "m_SelectedPackage": {
-        "deviceId": "R3CN5045DGM",
+        "deviceId": "R59M60EXQ1B",
         "name": "com.Jay.Luxa",
-        "processId": 15387,
+        "processId": 18150,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -204,6 +204,12 @@
             "deviceId": "R3CN5045DGM",
             "name": "com.Jay.Luxa",
             "processId": 15387,
+            "exited": false
+        },
+        {
+            "deviceId": "R59M60EXQ1B",
+            "name": "com.Jay.Luxa",
+            "processId": 18150,
             "exited": false
         }
     ],
