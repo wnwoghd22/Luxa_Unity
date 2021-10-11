@@ -15,18 +15,30 @@ public class Controller : MonoBehaviour {
 
     private GameManager gm;
 
+    private RuntimePlatform platform;
+
     // Start is called before the first frame update
     void Start()
     {
         currentActivated = null;
         gm = FindObjectOfType<GameManager>();
+
+        platform = Application.platform;
     }
 
     // Update is called once per frame
     void Update()
     {
-        HandleTouch();
-        HandleClick();
+        switch (platform)
+        {
+            case RuntimePlatform.Android:
+                HandleTouch();
+                GetKeyForAndroid();
+                break;
+            case RuntimePlatform.WindowsEditor:
+                HandleClick();
+                break;
+        }
     }
     private void HandleClick()
     {
@@ -92,6 +104,21 @@ public class Controller : MonoBehaviour {
                     }
                     break;
             }
+        }
+    }
+    private void GetKeyForAndroid()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            gm.HandleEscapeButton();
+        }
+        else if (Input.GetKeyDown(KeyCode.Home))
+        {
+            
+        }
+        else if (Input.GetKeyDown(KeyCode.Menu))
+        {
+
         }
     }
 

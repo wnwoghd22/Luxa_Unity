@@ -161,6 +161,12 @@ public class GameManager : MonoBehaviour
     public void MoveToGameScene() => SceneManager.LoadScene("GameScene");
     public void BackToTitle() => SceneManager.LoadScene("Title");
 
+    public void HandleEscapeButton()
+    {
+        if (activeScene.name == "GameScene") BackToTitle();
+        else if (activeScene.name == "Title") Application.Quit();
+    }
+
     public void NextStage() => StartCoroutine(InitializeStage(++StageNum));
     public void PreviousStage() => StartCoroutine(InitializeStage(--StageNum));
     public void RestartStage() => StartCoroutine(InitializeStage(StageNum));
