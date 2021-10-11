@@ -185,6 +185,10 @@ public class GameManager : MonoBehaviour
     {
         //effect
 
+        //need to add condition check if player solved problem with minimum rotation
+        data.AddStatus(data.LastPackNum + "-" + data.LastStageNum, 1);
+        fm.WriteSaveFile();
+
         yield return new WaitForSeconds(0.3f);
 
         NextStage();

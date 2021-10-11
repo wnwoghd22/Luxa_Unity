@@ -221,7 +221,10 @@ public class FileManager :MonoBehaviour {
         Debug.Log(data);
 
         if (data != null)
+        {
             Debug.Log(data.LastPackNum + " " + data.LastStageNum);
+            data.ConstructDict();
+        }
 
         return data;
     }
@@ -231,7 +234,7 @@ public class FileManager :MonoBehaviour {
 
         StreamWriter saveFile = new StreamWriter(filePath);
 
-        Debug.Log(JsonUtility.ToJson(data));
+        data.DestructDict();
 
         saveFile.Write(JsonUtility.ToJson(data));
         saveFile.Close();
