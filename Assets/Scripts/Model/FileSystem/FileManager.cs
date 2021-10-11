@@ -180,6 +180,7 @@ public class FileManager :MonoBehaviour {
         {
             case RuntimePlatform.Android:
                 Debug.Log("read file for android");
+                gm.SetData(ReadSaveFileForLocal());
                 break;
             case RuntimePlatform.WindowsEditor:
             case RuntimePlatform.WindowsPlayer:
@@ -195,6 +196,7 @@ public class FileManager :MonoBehaviour {
         {
             case RuntimePlatform.Android:
                 Debug.Log("write file for android");
+                WriteSaveFileForLocal(gm.Data);
                 break;
             case RuntimePlatform.WindowsEditor:
             case RuntimePlatform.WindowsPlayer:

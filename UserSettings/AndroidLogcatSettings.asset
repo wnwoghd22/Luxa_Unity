@@ -3,7 +3,7 @@
     "m_SelectedPackage": {
         "deviceId": "R59M60EXQ1B",
         "name": "com.Jay.Luxa",
-        "processId": 18150,
+        "processId": 5248,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -210,6 +210,18 @@
             "deviceId": "R59M60EXQ1B",
             "name": "com.Jay.Luxa",
             "processId": 18150,
+            "exited": false
+        },
+        {
+            "deviceId": "R59M60EXQ1B",
+            "name": "com.Jay.Luxa",
+            "processId": 3994,
+            "exited": false
+        },
+        {
+            "deviceId": "R59M60EXQ1B",
+            "name": "com.Jay.Luxa",
+            "processId": 5248,
             "exited": false
         }
     ],
