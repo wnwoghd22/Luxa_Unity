@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     FileManager fm;
     UIManager ui;
+    PlayGamesServiceManager pm;
     Board board;
     public void SetBoard(Board b) => board = b;
     Viewer viewer;
@@ -58,6 +59,8 @@ public class GameManager : MonoBehaviour
                 viewer = FindObjectOfType<Viewer>();
             if (ui == null)
                 ui = FindObjectOfType<UIManager>();
+            if (pm == null)
+                pm = FindObjectOfType<PlayGamesServiceManager>();
             ui.SetTitleUIActive(true);
             ui.SetGameUIActive(false);
             InitializeTitle();
@@ -188,6 +191,8 @@ public class GameManager : MonoBehaviour
         //need to add condition check if player solved problem with minimum rotation
         data.AddStatus(data.LastPackNum + "-" + data.LastStageNum, 1);
         fm.WriteSaveFile();
+
+        pm.UnlockAchievement();
 
         yield return new WaitForSeconds(0.3f);
 
