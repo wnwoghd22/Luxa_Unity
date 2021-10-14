@@ -12,6 +12,7 @@ public class MobileAdsManager : MonoBehaviour
     {
         //initialize mobile ads
         MobileAds.Initialize(initState => { });
+        RequestBanner();
     }
 
     // Update is called once per frame
@@ -20,17 +21,17 @@ public class MobileAdsManager : MonoBehaviour
         
     }
 
-    private void RequestBanner()
+    public void RequestBanner()
     {
 
         string adUnitId = "ca-app-pub-3940256099942544/6300978111";
-#if UNITY_ANDROID
-        //string adUnitId = "ca-app-pub-3940256099942544/6300978111";
-#elif UNITY_IPHONE
-            string adUnitId = "ca-app-pub-3940256099942544/2934735716";
-#else
-            string adUnitId = "unexpected_platform";
-#endif
+//#if UNITY_ANDROID
+//        string adUnitId = "ca-app-pub-3940256099942544/6300978111";
+//#elif UNITY_IPHONE
+//            string adUnitId = "ca-app-pub-3940256099942544/2934735716";
+//#else
+//            string adUnitId = "unexpected_platform";
+//#endif
 
         // Create a 320x50 banner at the top of the screen.
         this.bannerView = new BannerView(adUnitId, AdSize.Banner, AdPosition.Bottom);
@@ -40,5 +41,12 @@ public class MobileAdsManager : MonoBehaviour
 
         // Load the banner with the request.
         this.bannerView.LoadAd(request);
+
+        bannerView.Show();
+    }
+
+    public void HideBanner()
+    {
+        bannerView.Hide();
     }
 }
