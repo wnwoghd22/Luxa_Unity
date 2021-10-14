@@ -11,12 +11,6 @@
         {
             "deviceId": "R3CN5045DGM",
             "name": "com.Jay.Luxa",
-            "processId": 10191,
-            "exited": true
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
             "processId": 11356,
             "exited": true
         },
@@ -42,6 +36,12 @@
             "deviceId": "R3CN5045DGM",
             "name": "com.kakao.talk",
             "processId": 3216,
+            "exited": true
+        },
+        {
+            "deviceId": "R3CN5045DGM",
+            "name": "com.sec.android.app.launcher",
+            "processId": 7862,
             "exited": false
         },
         {

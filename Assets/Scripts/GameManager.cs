@@ -99,7 +99,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator InitializeStage()
     {
         board = null;
-        //ui.SetStageNum(n);
+        ui.SetStageNum(Level + " - " + StageNum);
         rotateCount = 0;
         ui.SetRotateCount("" + 0);
         playLog = new List<(int, bool)>();
@@ -111,7 +111,6 @@ public class GameManager : MonoBehaviour
         while (board == null) yield return null;
 
         viewer.CreateBoard(board);
-        //stageNum = n;
     }
 
     public void BoardUpdate(int index, float zeta)
@@ -175,6 +174,14 @@ public class GameManager : MonoBehaviour
         ui.SetRotateCount("" + rotateCount);
         board.Rotate(lastMove.Item1, !lastMove.Item2);
         viewer.UpdateBoard(lastMove.Item1, !lastMove.Item2);
+    }
+    public void HandleOver60deg(int index, bool dir)
+    {
+        ++rotateCount;
+        ui.SetRotateCount("" + rotateCount);
+
+        board.Rotate(index, dir);
+        //viewer.UpdateBoard(index, dir);
     }
 
     public void MoveToGameScene() => SceneManager.LoadScene("GameScene");

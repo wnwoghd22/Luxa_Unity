@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Controller : MonoBehaviour {
-    //public float rotatespeed = 10f;
-    //private float _startingPosition;
-
-    //private bool onTouch = false;
-
     private RingObject currentActivated;
 
-    private Vector2 initialPos;
-    private Vector2 endPos;
+    private Vector3 initialPos;
+    private Vector3 endPos;
+    private Vector3 ringPos;
+    private float angleOffset;
 
     private GameManager gm;
 
@@ -45,27 +42,44 @@ public class Controller : MonoBehaviour {
         if (Input.GetMouseButtonDown(0))
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 pos = new Vector2(mousePos.x, mousePos.y);
-            Collider2D[] hits = Physics2D.OverlapPointAll(pos);
+            Collider2D[] hits = Physics2D.OverlapPointAll(mousePos);
 
             if (hits.Length == 1)
             {    
                 currentActivated = hits[0].gameObject.GetComponent<RingObject>();
-                initialPos = pos;
+                ringPos = hits[0].gameObject.transform.position;
+                initialPos = mousePos;
+                Vector3 vec = initialPos - ringPos;
+                angleOffset = Mathf.Atan2(vec.y, vec.x);
                 gm.SetRingActivate(currentActivated.Index);
             }
         }
         else if (Input.GetMouseButtonUp(0))
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 pos = new Vector2(mousePos.x, mousePos.y);
 
             if (currentActivated)
             {
-                endPos = pos;
+                endPos = mousePos;
                 currentActivated.SetAlpha(0.3f);
                 currentActivated.SetActive(false);
                 Rotate();
+            }
+        }
+        else if (Input.GetMouseButton(0))
+        {
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 currentVec = mousePos - ringPos;
+            float angle = Mathf.Atan2(currentVec.y, currentVec.x) - angleOffset;
+
+            Debug.Log(angle);
+            if (Mathf.Abs(angle) > Mathf.PI / 3) //over 60 deg
+            {
+                Debug.Log("over 60 deg");
+                initialPos = mousePos;
+                Vector3 vec = initialPos - ringPos;
+                angleOffset = Mathf.Atan2(vec.y, vec.x);
+                gm.HandleOver60deg(currentActivated.Index, angle > 0);
             }
         }
     }
@@ -125,7 +139,7 @@ public class Controller : MonoBehaviour {
     private void Rotate()
     {
         int _index = currentActivated.Index;
-        Vector2 center = currentActivated.gameObject.transform.position;
+        Vector3 center = currentActivated.gameObject.transform.position;
         //Vector2 center = new Vector2(currentActivated.posX, currentActivated.posY);
         initialPos -= center; endPos -= center; //normalize
         currentActivated = null;
