@@ -1,9 +1,9 @@
 {
-    "m_SelectedDeviceId": "R59M60EXQ1B",
+    "m_SelectedDeviceId": "R3CN5045DGM",
     "m_SelectedPackage": {
-        "deviceId": "R59M60EXQ1B",
-        "name": "com.Jay.Luxa",
-        "processId": 6209,
+        "deviceId": "",
+        "name": "",
+        "processId": 0,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -11,199 +11,37 @@
         {
             "deviceId": "R3CN5045DGM",
             "name": "com.Jay.Luxa",
-            "processId": 7705,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 8934,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 10469,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 14486,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 15174,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 9929,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 14829,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 10324,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 16691,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 17092,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 18201,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 19629,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 4425,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 15588,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 19554,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 21982,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 22515,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 22850,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 23437,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 24254,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 24800,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 25560,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 13053,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 19866,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 26249,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 4215,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 5355,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
-            "processId": 8915,
-            "exited": false
-        },
-        {
-            "deviceId": "R3CN5045DGM",
-            "name": "com.Jay.Luxa",
             "processId": 10191,
-            "exited": false
+            "exited": true
         },
         {
             "deviceId": "R3CN5045DGM",
             "name": "com.Jay.Luxa",
             "processId": 11356,
-            "exited": false
+            "exited": true
         },
         {
             "deviceId": "R3CN5045DGM",
             "name": "com.Jay.Luxa",
             "processId": 12384,
-            "exited": false
+            "exited": true
         },
         {
             "deviceId": "R3CN5045DGM",
             "name": "com.Jay.Luxa",
             "processId": 13489,
-            "exited": false
+            "exited": true
         },
         {
             "deviceId": "R3CN5045DGM",
             "name": "com.Jay.Luxa",
             "processId": 15387,
+            "exited": true
+        },
+        {
+            "deviceId": "R3CN5045DGM",
+            "name": "com.kakao.talk",
+            "processId": 3216,
             "exited": false
         },
         {

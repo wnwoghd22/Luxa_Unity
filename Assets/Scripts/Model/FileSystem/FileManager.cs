@@ -17,7 +17,7 @@ public class FileManager :MonoBehaviour {
         //gm = FindObjectOfType<GameManager>();
     }
 
-    public IEnumerator ReadStageFile(int n)
+    public IEnumerator ReadStageFile(int level,int n)
     {
         RuntimePlatform platform = Application.platform;
         switch(platform)
@@ -25,19 +25,19 @@ public class FileManager :MonoBehaviour {
             case RuntimePlatform.Android:
                 Debug.Log("read file for android");
                 //result = ReadStageFileForAndroid(n).Result;
-                yield return StartCoroutine(ReadStageFileForAndroidCoroutine(n));
+                yield return StartCoroutine(ReadStageFileForAndroidCoroutine(level, n));
                 break;
             case RuntimePlatform.WindowsEditor:
             case RuntimePlatform.WindowsPlayer:
                 Debug.Log("read file for local");
-                ReadStageFileForLocal(n);
+                ReadStageFileForLocal(level, n);
                 break;
         }
     }
-    private Board ReadStageFileForLocal(int n) {
+    private Board ReadStageFileForLocal(int level, int n) {
         string os = SystemInfo.operatingSystem;
 
-        string filePath = Path.Combine(Application.streamingAssetsPath, "Stages/" + n + ".txt");
+        string filePath = Path.Combine(Application.streamingAssetsPath, "Stages/" + level + "/" + n + ".txt");
         StreamReader file = new StreamReader(filePath);
 
         string boardSize = file.ReadLine();
@@ -73,9 +73,9 @@ public class FileManager :MonoBehaviour {
 
         return b;
     }
-    private IEnumerator ReadStageFileForAndroidCoroutine(int n)
+    private IEnumerator ReadStageFileForAndroidCoroutine(int level, int n)
     {
-        string filePath = "jar:file://" + Application.dataPath + "!/assets/Stages/" + n + ".txt";
+        string filePath = "jar:file://" + Application.dataPath + "!/assets/Stages/" + level + "/" + n + ".txt";
         using var request = UnityWebRequest.Get(filePath);
         var operation = request.SendWebRequest();
         while (!operation.isDone)yield return null;

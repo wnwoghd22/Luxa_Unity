@@ -19,6 +19,11 @@ public class GameManager : MonoBehaviour
         get => data.LastStageNum;
         private set => data.LastStageNum = value <= 1 ? 1 : value;
     }
+    public int Level
+    {
+        get => data.LastPackNum;
+        private set => data.LastPackNum = value <= 1 ? 1 : value;
+    }
     int rotateCount;
     List<(int, bool)> playLog;
     Scene activeScene;
@@ -69,13 +74,13 @@ public class GameManager : MonoBehaviour
         {
             ui.SetTitleUIActive(false);
             ui.SetGameUIActive(true);
-            StartCoroutine(InitializeStage(StageNum));
+            StartCoroutine(InitializeStage());
         }
     }
 
     void Update()
     {
-        
+
     }
     private void InitializeTitle()
     {
@@ -84,24 +89,24 @@ public class GameManager : MonoBehaviour
 
         viewer.CreateTitleBoard();
         //StageNum = data.LastStageNum;
-        
+
         rotateCount = 0;
         ui.SetTitleStageNum(StageNum);
-        ui.SetPackNum(1);
+        ui.SetPackNum(Level);
     }
     public void SetData(SaveData data) => this.data = data == null ? new SaveData() : data;
 
-    private IEnumerator InitializeStage(int n)
+    private IEnumerator InitializeStage()
     {
         board = null;
-        ui.SetStageNum(n);
+        //ui.SetStageNum(n);
         rotateCount = 0;
         ui.SetRotateCount("" + 0);
         playLog = new List<(int, bool)>();
 
         fm.WriteSaveFile();
 
-        StartCoroutine(fm.ReadStageFile(n));
+        StartCoroutine(fm.ReadStageFile(Level, StageNum));
 
         while (board == null) yield return null;
 
@@ -125,7 +130,8 @@ public class GameManager : MonoBehaviour
     {
         if (index == 0)
         {
-            //set packNum
+            Level += zeta < 0 ? 1 : -1;
+            ui.SetPackNum(Level);
         }
         else if (index == 1)
         {
@@ -165,7 +171,7 @@ public class GameManager : MonoBehaviour
         (int, bool) lastMove = playLog[playLog.Count - 1];
         playLog.RemoveAt(playLog.Count - 1);
 
-       --rotateCount;
+        --rotateCount;
         ui.SetRotateCount("" + rotateCount);
         board.Rotate(lastMove.Item1, !lastMove.Item2);
         viewer.UpdateBoard(lastMove.Item1, !lastMove.Item2);
@@ -180,9 +186,17 @@ public class GameManager : MonoBehaviour
         else if (activeScene.name == "Title") Application.Quit();
     }
 
-    public void NextStage() => StartCoroutine(InitializeStage(++StageNum));
-    public void PreviousStage() => StartCoroutine(InitializeStage(--StageNum));
-    public void RestartStage() => StartCoroutine(InitializeStage(StageNum));
+    public void NextStage()
+    {
+        StageNum += 1;
+        StartCoroutine(InitializeStage());
+    }
+    public void PreviousStage()
+    {
+        StageNum -= 1;
+        StartCoroutine(InitializeStage());
+    }
+    public void RestartStage() => StartCoroutine(InitializeStage());
 
     private IEnumerator MoveToNextLevelCoroutine()
     {
