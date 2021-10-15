@@ -66,22 +66,22 @@ public class Controller : MonoBehaviour {
                 Rotate();
             }
         }
-        else if (Input.GetMouseButton(0))
-        {
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector3 currentVec = mousePos - ringPos;
-            float angle = Mathf.Atan2(currentVec.y, currentVec.x) - angleOffset;
+        //else if (Input.GetMouseButton(0))
+        //{
+        //    Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //    Vector3 currentVec = mousePos - ringPos;
+        //    float angle = Mathf.Atan2(currentVec.y, currentVec.x) - angleOffset;
 
-            Debug.Log(angle);
-            if (Mathf.Abs(angle) > Mathf.PI / 3) //over 60 deg
-            {
-                Debug.Log("over 60 deg");
-                initialPos = mousePos;
-                Vector3 vec = initialPos - ringPos;
-                angleOffset = Mathf.Atan2(vec.y, vec.x);
-                gm.HandleOver60deg(currentActivated.Index, angle > 0);
-            }
-        }
+        //    Debug.Log(angle);
+        //    if (Mathf.Abs(angle) > Mathf.PI / 3) //over 60 deg
+        //    {
+        //        Debug.Log("over 60 deg");
+        //        initialPos = mousePos;
+        //        Vector3 vec = initialPos - ringPos;
+        //        angleOffset = Mathf.Atan2(vec.y, vec.x);
+        //        gm.HandleOver60deg(currentActivated.Index, angle > 0);
+        //    }
+        //}
     }
     private void HandleTouch()
     {
@@ -140,14 +140,16 @@ public class Controller : MonoBehaviour {
     {
         int _index = currentActivated.Index;
         Vector3 center = currentActivated.gameObject.transform.position;
-        //Vector2 center = new Vector2(currentActivated.posX, currentActivated.posY);
         initialPos -= center; endPos -= center; //normalize
-        currentActivated = null;
 
-        float zeta = initialPos.x * endPos.y - initialPos.y * endPos.x ;
-        //Debug.Log(initialPos + " " + endPos + center + zeta);
-        //if (Mathf.Abs(zeta) < 1f) return;
+        float angle = Mathf.Atan2(endPos.y, endPos.x) - Mathf.Atan2(initialPos.y, initialPos.x);
 
-        gm.BoardUpdate(_index, zeta);
+        //float zeta = initialPos.x * endPos.y - initialPos.y * endPos.x ;
+
+        int rotateUnit = Mathf.Abs((int)(angle / (Mathf.PI / 3.0f)));
+        Debug.Log("angle : " + angle + ", count : " + rotateUnit);
+
+        
+        while(rotateUnit-- > 0) gm.BoardUpdate(_index, angle);
     }
 }
