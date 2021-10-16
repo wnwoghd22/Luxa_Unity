@@ -140,16 +140,25 @@ public class Controller : MonoBehaviour {
         int _index = currentActivated.Index;
         Vector3 center = currentActivated.gameObject.transform.position;
         initialPos -= center; endPos -= center; //normalize
+        endPos = endPos.normalized; initialPos = initialPos.normalized;
 
-        float angle = Mathf.Atan2(endPos.y, endPos.x) - Mathf.Atan2(initialPos.y, initialPos.x);
+        Vector2 _end = new Vector2(endPos.x, endPos.y).normalized;
+        Vector2 _init = new Vector2(initialPos.x, initialPos.y).normalized;
 
-        //float zeta = initialPos.x * endPos.y - initialPos.y * endPos.x ;
+        Vector2 vec2 = _end - _init;
+        Debug.Log(endPos + ", " + initialPos + ", " + vec2);
+        Debug.Log("magnitude : " + vec2.magnitude);
 
-        int rotateUnit = Mathf.Abs((int)(angle / (Mathf.PI / 3.0f)));
+        float angle = 2 * Mathf.Asin(vec2.magnitude / 2);
+
+        float zeta = _init.x * _end.y - _init.y * _end.x;
+        Debug.Log("zeta : " + zeta);
+
+        int rotateUnit = (int)((Mathf.Abs(angle) + Mathf.PI / 6.0f) / (Mathf.PI / 3.0f));
         Debug.Log("end : " + Mathf.Atan2(endPos.y, endPos.x) + ", initial : " + Mathf.Atan2(initialPos.y, initialPos.x) + " angle : " + angle + ", count : " + rotateUnit);
 
         currentActivated = null;
 
-        while(rotateUnit-- > 0) gm.BoardUpdate(_index, angle);
+        while(rotateUnit-- > 0) gm.BoardUpdate(_index, zeta);
     }
 }
