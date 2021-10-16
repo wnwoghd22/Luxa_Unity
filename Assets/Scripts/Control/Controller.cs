@@ -61,7 +61,6 @@ public class Controller : MonoBehaviour {
             if (currentActivated)
             {
                 endPos = mousePos;
-                currentActivated.SetAlpha(0.3f);
                 currentActivated.SetActive(false);
                 Rotate();
             }
@@ -147,9 +146,10 @@ public class Controller : MonoBehaviour {
         //float zeta = initialPos.x * endPos.y - initialPos.y * endPos.x ;
 
         int rotateUnit = Mathf.Abs((int)(angle / (Mathf.PI / 3.0f)));
-        Debug.Log("angle : " + angle + ", count : " + rotateUnit);
+        Debug.Log("end : " + Mathf.Atan2(endPos.y, endPos.x) + ", initial : " + Mathf.Atan2(initialPos.y, initialPos.x) + " angle : " + angle + ", count : " + rotateUnit);
 
-        
+        currentActivated = null;
+
         while(rotateUnit-- > 0) gm.BoardUpdate(_index, angle);
     }
 }

@@ -54,6 +54,12 @@ public class RingObject : BoardObject
 
             HandleRotate();
         }
+        else
+        {
+            angleOffset = 0f;
+            initialAngle = 0f;
+            SetAlpha(0.3f);
+        }
     }
     
 
@@ -61,6 +67,7 @@ public class RingObject : BoardObject
     void Start()
     {
         angleOffset = 0f;
+        initialAngle = 0f;
     }
 
     // Update is called once per frame
