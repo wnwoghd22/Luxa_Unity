@@ -159,6 +159,7 @@ public class Controller : MonoBehaviour {
 
         currentActivated = null;
 
+        if (rotateUnit == 0) gm.UndoRotate(_index);
         while(rotateUnit-- > 0) gm.BoardUpdate(_index, zeta);
     }
 }

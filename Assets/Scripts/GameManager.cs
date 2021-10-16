@@ -113,17 +113,14 @@ public class GameManager : MonoBehaviour
         viewer.CreateBoard(board);
     }
 
+    public void UndoRotate(int index)
+    {
+        viewer.UndoRotate(index);
+    }
     public void BoardUpdate(int index, float zeta)
     {
-        if (Mathf.Abs(zeta) < 0.3f)
-        {
-            viewer.UndoRotate(index);
-        }
-        else
-        {
-            if (activeScene.name == "Title") UpdateBoardForTitle(index, zeta);
-            else if (activeScene.name == "GameScene") UpdateBoardForGameScene(index, zeta);
-        }
+        if (activeScene.name == "Title") UpdateBoardForTitle(index, zeta);
+        else if (activeScene.name == "GameScene") UpdateBoardForGameScene(index, zeta);
     }
     public void UpdateBoardForTitle(int index, float zeta)
     {
