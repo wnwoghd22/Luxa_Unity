@@ -17,13 +17,17 @@ public class GameManager : MonoBehaviour
     public int StageNum
     {
         get => data.LastStageNum;
-        private set => data.LastStageNum = value <= 1 ? 1 : value;
+        private set => data.LastStageNum = value <= 1 ? 1 : value >= MAX_STAGE_COUNT ? MAX_STAGE_COUNT : value;
     }
     public int Level
     {
         get => data.LastPackNum;
-        private set => data.LastPackNum = value <= 1 ? 1 : value;
+        private set => data.LastPackNum = value <= 1 ? 1 : value >= MAX_LEVEL_COUNT ? MAX_LEVEL_COUNT : value;
     }
+
+    private const int MAX_STAGE_COUNT = 30;
+    private const int MAX_LEVEL_COUNT = 1;
+
     int rotateCount;
     List<(int, bool)> playLog;
     Scene activeScene;
@@ -192,12 +196,32 @@ public class GameManager : MonoBehaviour
 
     public void NextStage()
     {
-        StageNum += 1;
+        if (StageNum == MAX_STAGE_COUNT)
+        {
+            if (Level == MAX_LEVEL_COUNT) return;
+            else
+            {
+                Level += 1;
+                StageNum = 1;
+            }
+        }
+        else StageNum += 1;
+
         StartCoroutine(InitializeStage());
     }
     public void PreviousStage()
     {
-        StageNum -= 1;
+        if (StageNum == 1)
+        {
+            if (Level == 1) return;
+            else
+            {
+                Level -= 1;
+                StageNum = MAX_STAGE_COUNT;
+            }
+        }
+        else StageNum -= 1;
+
         StartCoroutine(InitializeStage());
     }
     public void RestartStage() => StartCoroutine(InitializeStage());
