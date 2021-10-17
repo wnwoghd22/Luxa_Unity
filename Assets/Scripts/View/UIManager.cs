@@ -40,6 +40,10 @@ public class UIManager : MonoBehaviour
 
     public void SetStageNum(int n) => stageNum.text = "" + n;
     public void SetStageNum(string s) => stageNum.text = s;
-    public void SetRotateCount(string s) => rotateCount.text = s;
-    public void SetRotateCountWithCheck(int n) => rotateCount.text = "" + n + '\u2713';
+
+    //public void SetRotateCount(string s) => rotateCount.text = s;
+    //public void SetRotateCountWithCheck(int n) => rotateCount.text = "" + n + '\u2713';
+
+    public void SetRotateCount(int count, int minimum) => rotateCount.text = count + " (" + minimum + ")";
+    public void SetRotateCountWithCheck(int count, int minimum) => rotateCount.text = count + " (" + minimum + ")" + '\u2713';
 }

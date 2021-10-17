@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     }
 
     private const int MAX_STAGE_COUNT = 30;
-    private const int MAX_LEVEL_COUNT = 1;
+    private const int MAX_LEVEL_COUNT = 3;
 
     int rotateCount;
     List<(int, bool)> playLog;
@@ -39,7 +39,8 @@ public class GameManager : MonoBehaviour
             else return board.isComplete;
         }
     }
-    WaitUntil isSolved;
+
+    private WaitUntil isSolved;
 
     private void Awake()
     {
@@ -104,8 +105,6 @@ public class GameManager : MonoBehaviour
     {
         board = null;
         ui.SetStageNum(Level + " - " + StageNum);
-        rotateCount = 0;
-        ui.SetRotateCount("" + 0);
         playLog = new List<(int, bool)>();
 
         fm.WriteSaveFile();
@@ -115,6 +114,9 @@ public class GameManager : MonoBehaviour
         while (board == null) yield return null;
 
         viewer.CreateBoard(board);
+
+        rotateCount = 0;
+        ui.SetRotateCount(rotateCount, board.Minimum);
     }
 
     public void UndoRotate(int index)
@@ -145,7 +147,7 @@ public class GameManager : MonoBehaviour
         if (isComplete) return;
 
         ++rotateCount;
-        ui.SetRotateCount("" + rotateCount);
+        ui.SetRotateCount(rotateCount, board.Minimum);
         playLog.Add((index, zeta < 0));
         //foreach ((int, bool) item in playLog) Debug.Log(item);
         board.Rotate(index, zeta < 0);
@@ -153,7 +155,7 @@ public class GameManager : MonoBehaviour
 
         if (isComplete)
         {
-            ui.SetRotateCountWithCheck(rotateCount);
+            ui.SetRotateCountWithCheck(rotateCount, board.Minimum);
             StartCoroutine(MoveToNextLevelCoroutine());
         }
     }
@@ -172,17 +174,9 @@ public class GameManager : MonoBehaviour
         playLog.RemoveAt(playLog.Count - 1);
 
         --rotateCount;
-        ui.SetRotateCount("" + rotateCount);
+        ui.SetRotateCount(rotateCount, board.Minimum);
         board.Rotate(lastMove.Item1, !lastMove.Item2);
         viewer.UpdateBoard(lastMove.Item1, !lastMove.Item2);
-    }
-    public void HandleOver60deg(int index, bool dir)
-    {
-        ++rotateCount;
-        ui.SetRotateCount("" + rotateCount);
-
-        board.Rotate(index, dir);
-        //viewer.UpdateBoard(index, dir);
     }
 
     public void MoveToGameScene() => SceneManager.LoadScene("GameScene");

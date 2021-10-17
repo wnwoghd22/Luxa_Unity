@@ -43,7 +43,7 @@ public class FileManager :MonoBehaviour {
         string boardSize = file.ReadLine();
         string[] size = boardSize.Split(' ');
 
-        Board b = new Board(Convert.ToInt32(size[0]), Convert.ToInt32(size[1]));
+        Board b = new Board(Convert.ToInt32(size[0]), Convert.ToInt32(size[1]), Convert.ToInt32(size[2]));
 
         int beadNum = Convert.ToInt32(file.ReadLine());
         while(beadNum-- > 0) {
@@ -85,7 +85,7 @@ public class FileManager :MonoBehaviour {
 
         string[] size = fileString[idx++].Split(' ');
 
-        Board b = new Board(Convert.ToInt32(size[0]), Convert.ToInt32(size[1]));
+        Board b = new Board(Convert.ToInt32(size[0]), Convert.ToInt32(size[1]), Convert.ToInt32(size[2]));
 
         int beadNum = Convert.ToInt32(fileString[idx++]);
         while (beadNum-- > 0)
@@ -143,7 +143,7 @@ public class FileManager :MonoBehaviour {
 
         string[] size = fileString[idx++].Split(' ');
 
-        b = new Board(Convert.ToInt32(size[0]), Convert.ToInt32(size[1]));
+        b = new Board(Convert.ToInt32(size[0]), Convert.ToInt32(size[1]), Convert.ToInt32(size[2]));
 
         int beadNum = Convert.ToInt32(fileString[idx++]);
         while (beadNum-- > 0)
