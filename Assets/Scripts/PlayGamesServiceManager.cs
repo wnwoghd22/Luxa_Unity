@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 
@@ -11,6 +12,15 @@ public class PlayGamesServiceManager : MonoBehaviour
     public int playerScore;
     string leaderboardID = "";
     string achievementID = "CgkI7trZuckPEAIQAA";
+
+    private Dictionary<string, string> achievementIDs = new Dictionary<string, string>
+    {
+        { "First Step", "CgkI7trZuckPEAIQAA" },
+        { "Perfect Solution", "CgkI7trZuckPEAIQAg" },
+        { "Complete Level 1", "CgkI7trZuckPEAIQAw" },
+        { "Conquer Level 1", "CgkI7trZuckPEAIQBA" },
+    };
+
     public static PlayGamesPlatform platform;
 
     void Start()
@@ -34,7 +44,6 @@ public class PlayGamesServiceManager : MonoBehaviour
                 Debug.Log("Login Failed");
             }
         });
-        //UnlockAchievement();
     }
 
     public void AddScoreToLeaderboard()
@@ -61,11 +70,20 @@ public class PlayGamesServiceManager : MonoBehaviour
         }
     }
 
+    //for test
     public void UnlockAchievement()
     {
         if (Social.Active.localUser.authenticated)
         {
             Social.ReportProgress(achievementID, 100f, success => { });
+        }
+    }
+
+    public void UnlockAchievement(string key)
+    {
+        if (Social.Active.localUser.authenticated)
+        {
+            Social.ReportProgress(achievementIDs[key], 100f, success => { });
         }
     }
 }

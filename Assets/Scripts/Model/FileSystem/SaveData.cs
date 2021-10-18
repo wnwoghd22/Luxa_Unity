@@ -10,6 +10,7 @@ public class SaveData
     [SerializeField] private int lastStageNum; // save player's last played stage number
     public int LastStageNum { get => lastStageNum; set => lastStageNum = value; }
     private Dictionary<string, int> clearStatus;
+    public Dictionary<string, int> Status => clearStatus;
     [SerializeField] private List<string> keyList;
     [SerializeField] private List<int> valueList;
 

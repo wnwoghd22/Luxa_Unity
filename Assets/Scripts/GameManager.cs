@@ -155,7 +155,11 @@ public class GameManager : MonoBehaviour
 
         if (isComplete)
         {
-            ui.SetRotateCountWithCheck(rotateCount, board.Minimum);
+            //if player solved problem with minimum rotation
+            if (rotateCount == board.Minimum)
+                ui.SetRotateCountWithStar(rotateCount, board.Minimum);
+            else
+                ui.SetRotateCountWithCheck(rotateCount, board.Minimum);
             StartCoroutine(MoveToNextLevelCoroutine());
         }
     }
@@ -224,15 +228,42 @@ public class GameManager : MonoBehaviour
     {
         //effect
 
-        //need to add condition check if player solved problem with minimum rotation
-        data.AddStatus(data.LastPackNum + "-" + data.LastStageNum, 1);
+
+        data.AddStatus(data.LastPackNum + "-" + data.LastStageNum, rotateCount == board.Minimum ? 2 : 1);
         fm.WriteSaveFile();
 
-        pm.UnlockAchievement();
+        CheckAchievement();
 
         yield return new WaitForSeconds(0.3f);
 
         NextStage();
     }
 
+    private void CheckAchievement()
+    {
+        pm.UnlockAchievement("First Step");
+        if (data.Status.ContainsValue(2))
+            pm.UnlockAchievement("Perfect Solution");
+
+        bool completeFlag = true, conquerFlag = true;
+        for (int i = 1; i <= 30; ++i)
+        {
+            if (data.Status.ContainsKey(Level + "-" + i))
+            {
+                int result = data.Status[Level + "-" + i];
+                if (result != 2)
+                {
+                    conquerFlag = false;
+                }
+            }
+            else
+            {
+                completeFlag = false;
+                conquerFlag = false;
+                break;
+            }
+        }
+        if (conquerFlag) pm.UnlockAchievement("Conquer Level " + Level);
+        if (completeFlag) pm.UnlockAchievement("Complete Level " + Level);
+    }
 }
