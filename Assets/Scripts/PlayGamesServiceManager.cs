@@ -15,10 +15,10 @@ public class PlayGamesServiceManager : MonoBehaviour
 
     private Dictionary<string, string> achievementIDs = new Dictionary<string, string>
     {
-        { "First Step", "CgkI7trZuckPEAIQAA" },
-        { "Perfect Solution", "CgkI7trZuckPEAIQAg" },
-        { "Complete Level 1", "CgkI7trZuckPEAIQAw" },
-        { "Conquer Level 1", "CgkI7trZuckPEAIQBA" },
+        { "First Step", GPGSIds.achievement_first_step },
+        { "Perfect Solution", GPGSIds.achievement_perfect_solution },
+        { "Complete Level 1", GPGSIds.achievement_complete_level_1 },
+        { "Conquer Level 1", GPGSIds.achievement_conquer_level_1 },
     };
 
     public static PlayGamesPlatform platform;
