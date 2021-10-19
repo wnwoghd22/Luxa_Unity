@@ -19,6 +19,8 @@ public class PlayGamesServiceManager : MonoBehaviour
         { "Perfect Solution", GPGSIds.achievement_perfect_solution },
         { "Complete Level 1", GPGSIds.achievement_complete_level_1 },
         { "Conquer Level 1", GPGSIds.achievement_conquer_level_1 },
+        { "Complete Level 2", GPGSIds.achievement_complete_level_2 },
+        { "Conquer Level 2", GPGSIds.achievement_conquer_level_2 },
     };
 
     public static PlayGamesPlatform platform;
