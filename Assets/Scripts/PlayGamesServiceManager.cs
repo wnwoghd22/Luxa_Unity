@@ -11,7 +11,6 @@ public class PlayGamesServiceManager : MonoBehaviour
 {
     public int playerScore;
     string leaderboardID = "";
-    string achievementID = "CgkI7trZuckPEAIQAA";
 
     private Dictionary<string, string> achievementIDs = new Dictionary<string, string>
     {
@@ -21,6 +20,13 @@ public class PlayGamesServiceManager : MonoBehaviour
         { "Conquer Level 1", GPGSIds.achievement_conquer_level_1 },
         { "Complete Level 2", GPGSIds.achievement_complete_level_2 },
         { "Conquer Level 2", GPGSIds.achievement_conquer_level_2 },
+        { "Complete Level 3", GPGSIds.achievement_complete_level_3 },
+        { "Conquer Level 3", GPGSIds.achievement_conquer_level_3 },
+        { "Complete Level 4", GPGSIds.achievement_complete_level_4 },
+        { "Conquer Level 4", GPGSIds.achievement_conquer_level_4 },
+        { "Complete Level 5", GPGSIds.achievement_complete_level_5 },
+        { "Conquer Level 5", GPGSIds.achievement_conquer_level_5 },
+
     };
 
     public static PlayGamesPlatform platform;
@@ -69,15 +75,6 @@ public class PlayGamesServiceManager : MonoBehaviour
         if (Social.Active.localUser.authenticated)
         {
             platform.ShowAchievementsUI();
-        }
-    }
-
-    //for test
-    public void UnlockAchievement()
-    {
-        if (Social.Active.localUser.authenticated)
-        {
-            Social.ReportProgress(achievementID, 100f, success => { });
         }
     }
 

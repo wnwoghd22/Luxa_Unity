@@ -24,12 +24,18 @@
 
 public static class GPGSIds
 {
+        public const string achievement_complete_level_5 = "CgkI7trZuckPEAIQCw"; // <GPGSID>
+        public const string achievement_complete_level_3 = "CgkI7trZuckPEAIQBw"; // <GPGSID>
         public const string achievement_first_step = "CgkI7trZuckPEAIQAA"; // <GPGSID>
+        public const string achievement_conquer_level_4 = "CgkI7trZuckPEAIQCg"; // <GPGSID>
         public const string achievement_complete_level_2 = "CgkI7trZuckPEAIQBQ"; // <GPGSID>
         public const string achievement_conquer_level_2 = "CgkI7trZuckPEAIQBg"; // <GPGSID>
         public const string achievement_perfect_solution = "CgkI7trZuckPEAIQAg"; // <GPGSID>
         public const string achievement_complete_level_1 = "CgkI7trZuckPEAIQAw"; // <GPGSID>
         public const string achievement_conquer_level_1 = "CgkI7trZuckPEAIQBA"; // <GPGSID>
+        public const string achievement_complete_level_4 = "CgkI7trZuckPEAIQCQ"; // <GPGSID>
+        public const string achievement_conquer_level_3 = "CgkI7trZuckPEAIQCA"; // <GPGSID>
+        public const string achievement_conquer_level_5 = "CgkI7trZuckPEAIQDA"; // <GPGSID>
 
 }
 

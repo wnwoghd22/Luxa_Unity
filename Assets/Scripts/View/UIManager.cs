@@ -16,6 +16,11 @@ public class UIManager : MonoBehaviour
     Text packNum;
 
     [SerializeField]
+    Text homeButton;
+    [SerializeField]
+    Text undoButton;
+
+    [SerializeField]
     Text stageNum;
     [SerializeField]
     Text rotateCount;
@@ -23,7 +28,8 @@ public class UIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        homeButton.text = "" + '\u2302';
+        undoButton.text = "" + '\u21BA';
     }
 
     // Update is called once per frame
