@@ -137,4 +137,11 @@ public class Viewer : MonoBehaviour {
     public void UndoRotate(int index) => ringInstances[index].UndoRotate(beadInstances);
 
     public void SetRingActivate(int i) => ringInstances[i].SetActive(true, beadInstances);
+
+    public void ClearEffect()
+    {
+        foreach (BeadObject bead in beadInstances)
+            if (bead != null)
+                StartCoroutine(bead.LightEffectCoroutine());
+    }
 }
