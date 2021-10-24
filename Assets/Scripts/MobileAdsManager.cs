@@ -23,8 +23,11 @@ public class MobileAdsManager : MonoBehaviour
 
     public void RequestBanner()
     {
+        
+        //test ad
+        string adUnitId_test = "ca-app-pub-3940256099942544/6300978111";
 
-        string adUnitId = "ca-app-pub-3940256099942544/6300978111";
+        string adUnitId = "ca-app-pub-3682435556137032/4693632989";
 //#if UNITY_ANDROID
 //        string adUnitId = "ca-app-pub-3940256099942544/6300978111";
 //#elif UNITY_IPHONE

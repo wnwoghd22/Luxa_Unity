@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     }
 
     private const int MAX_STAGE_COUNT = 30;
-    private const int MAX_LEVEL_COUNT = 4;
+    private const int MAX_LEVEL_COUNT = 5;
 
     int rotateCount;
     List<(int, bool)> playLog;
