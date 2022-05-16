@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -79,7 +80,8 @@ public class GameManager : MonoBehaviour
         {
             ui.SetTitleUIActive(false);
             ui.SetGameUIActive(true);
-            StartCoroutine(InitializeStage());
+
+            UniTask.Create(() => InitStageAsunc());
         }
     }
 
@@ -101,6 +103,7 @@ public class GameManager : MonoBehaviour
     }
     public void SetData(SaveData data) => this.data = data == null ? new SaveData() : data;
 
+    [System.Obsolete]
     private IEnumerator InitializeStage()
     {
         board = null;
@@ -112,6 +115,21 @@ public class GameManager : MonoBehaviour
         StartCoroutine(fm.ReadStageFile(Level, StageNum));
 
         while (board == null) yield return null;
+
+        viewer.CreateBoard(board);
+
+        rotateCount = 0;
+        ui.SetRotateCount(rotateCount, board.Minimum);
+    }
+
+    private async UniTask InitStageAsunc()
+    {
+        ui.SetStageNum(Level + " - " + StageNum);
+        playLog = new List<(int, bool)>();
+
+        fm.WriteSaveFile();
+
+        board = DataParser.ParseBoardData(await FileManager.GetStageFileAsync(Level, StageNum));
 
         viewer.CreateBoard(board);
 

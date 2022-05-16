@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 
 public class FileManager :MonoBehaviour {
     [SerializeField] private GameManager gm;
@@ -17,6 +18,7 @@ public class FileManager :MonoBehaviour {
         //gm = FindObjectOfType<GameManager>();
     }
 
+    [Obsolete]
     public IEnumerator ReadStageFile(int level,int n)
     {
         RuntimePlatform platform = Application.platform;
@@ -73,6 +75,7 @@ public class FileManager :MonoBehaviour {
 
         return b;
     }
+    [Obsolete]
     private IEnumerator ReadStageFileForAndroidCoroutine(int level, int n)
     {
         string filePath = "jar:file://" + Application.dataPath + "!/assets/Stages/" + level + "/" + n + ".txt";
@@ -116,6 +119,15 @@ public class FileManager :MonoBehaviour {
 
         yield return b;
     }
+    public static async UniTask<string> GetStageFileAsync(int level, int n)
+    {
+        string filePath = Application.streamingAssetsPath + "assets/Stages/ " + level + "/" + n + ".txt";
+
+        string txt = (await UnityWebRequest.Get(filePath).SendWebRequest()).downloadHandler.text;
+        return txt;
+    }
+
+    [Obsolete]
     private async Task<Board> ReadStageFileForAndroid(int n) {
         Board b = null;
 
