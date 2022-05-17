@@ -1,3 +1,5 @@
+using Cysharp.Threading.Tasks;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,7 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    FileManager fm;
+    [field: SerializeField] public FileManager FileManager { get; private set; }
+
     UIManager ui;
     PlayGamesServiceManager pm;
     Board board;
@@ -63,8 +66,6 @@ public class GameManager : MonoBehaviour
         activeScene = scene;
         if (activeScene.name == "Title")
         {
-            if (fm == null)
-                fm = FindObjectOfType<FileManager>();
             if (viewer == null)
                 viewer = FindObjectOfType<Viewer>();
             if (ui == null)
@@ -79,7 +80,8 @@ public class GameManager : MonoBehaviour
         {
             ui.SetTitleUIActive(false);
             ui.SetGameUIActive(true);
-            StartCoroutine(InitializeStage());
+
+            UniTask.Create(() => InitStageAsync());
         }
     }
 
@@ -89,7 +91,7 @@ public class GameManager : MonoBehaviour
     }
     private void InitializeTitle()
     {
-        fm.ReadSaveFile();
+        data = FileManager.ReadSaveFile();
 
 
         viewer.CreateTitleBoard();
@@ -101,17 +103,14 @@ public class GameManager : MonoBehaviour
     }
     public void SetData(SaveData data) => this.data = data == null ? new SaveData() : data;
 
-    private IEnumerator InitializeStage()
+    private async UniTask InitStageAsync()
     {
-        board = null;
         ui.SetStageNum(Level + " - " + StageNum);
         playLog = new List<(int, bool)>();
 
-        fm.WriteSaveFile();
+        FileManager.WriteSaveFile(Data);
 
-        StartCoroutine(fm.ReadStageFile(Level, StageNum));
-
-        while (board == null) yield return null;
+        board = DataParser.ParseBoardData(await FileManager.GetStageFileAsync(Level, StageNum));
 
         viewer.CreateBoard(board);
 
@@ -160,7 +159,8 @@ public class GameManager : MonoBehaviour
                 ui.SetRotateCountWithStar(rotateCount, board.Minimum);
             else
                 ui.SetRotateCountWithCheck(rotateCount, board.Minimum);
-            StartCoroutine(MoveToNextLevelCoroutine());
+            // StartCoroutine(MoveToNextLevelCoroutine());
+            UniTask.Create(() => MoveToNextLevelAsync());
         }
     }
 
@@ -205,7 +205,7 @@ public class GameManager : MonoBehaviour
         }
         else StageNum += 1;
 
-        StartCoroutine(InitializeStage());
+        UniTask.Create(() => InitStageAsync());
     }
     public void PreviousStage()
     {
@@ -220,20 +220,20 @@ public class GameManager : MonoBehaviour
         }
         else StageNum -= 1;
 
-        StartCoroutine(InitializeStage());
+        UniTask.Create(() => InitStageAsync());
     }
-    public void RestartStage() => StartCoroutine(InitializeStage());
+    public async void RestartStage() => await InitStageAsync();
 
-    private IEnumerator MoveToNextLevelCoroutine()
+    private async UniTask MoveToNextLevelAsync()
     {
         viewer.ClearEffect();
 
         data.AddStatus(data.LastPackNum + "-" + data.LastStageNum, rotateCount == board.Minimum ? 2 : 1);
-        fm.WriteSaveFile();
+        FileManager.WriteSaveFile(Data);
 
         CheckAchievement();
 
-        yield return new WaitForSeconds(1.0f);
+        await UniTask.Delay(TimeSpan.FromSeconds(1f));
 
         NextStage();
     }
