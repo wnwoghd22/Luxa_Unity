@@ -118,6 +118,14 @@ public class GameManager : MonoBehaviour
     {
         Viewer.UndoRotate(index);
     }
+
+    /// <summary>
+    /// Should it be like this...?
+    /// How about make TitleBoard Class that inherits Board?
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="zeta"></param>
+    [Obsolete]
     public void BoardUpdate(int index, float zeta)
     {
         if (activeScene.name == "Title") UpdateBoardForTitle(index, zeta);
