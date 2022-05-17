@@ -14,8 +14,6 @@ public class GameManager : MonoBehaviour
     [field: SerializeField] public PlayGamesServiceManager GPGS { get; private set; }
     [field: SerializeField] public Viewer Viewer { get; private set; }
 
-    [SerializeField] bool usingPostProcess = false;
-
     Board board;
     public void SetBoard(Board b) => board = b;
 
@@ -232,21 +230,12 @@ public class GameManager : MonoBehaviour
 
     private async UniTask MoveToNextLevelAsync()
     {
-
         data.AddStatus(data.LastPackNum + "-" + data.LastStageNum, rotateCount == board.Minimum ? 2 : 1);
         FileManager.WriteSaveFile(Data);
 
         CheckAchievement();
         
-        if (usingPostProcess)
-        {
-            await Viewer.ClearEffectAsync();
-        }
-        else
-        {
-            Viewer.ClearEffect();
-            await UniTask.Delay(TimeSpan.FromSeconds(1f));
-        }
+        await Viewer.ClearEffectAsync();
 
         NextStage();
     }

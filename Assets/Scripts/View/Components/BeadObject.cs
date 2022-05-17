@@ -10,9 +10,6 @@ public class BeadObject : BoardObject
     private Vector3 originPos;
     private float originAngle;
 
-    [SerializeField]
-    private SpriteRenderer effect;
-
     public void SetAngleOffset(Vector3 center, float angle)
     {
         originPos = transform.position;
@@ -38,7 +35,6 @@ public class BeadObject : BoardObject
     {
         SpriteRenderer renderer = gameObject.GetComponent<SpriteRenderer>();
         renderer.color = new Color(r, g, b, 1);
-        effect.color = new Color(r, g, b, 0);
     }
 
     public void UpdatePosition(float angle, Vector3 center)
@@ -54,29 +50,5 @@ public class BeadObject : BoardObject
         ) + center;
 
         transform.position = reposition;
-    }
-
-    [System.Obsolete]
-    public IEnumerator LightEffectCoroutine()
-    {
-        WaitForSeconds delta = new WaitForSeconds(.03f);
-        Color color = effect.color;
-        color.a = .0f;
-
-        effect.color = color;
-
-        while (effect.color.a < .7f)
-        {
-            color.a += .05f;
-            effect.color = color;
-            yield return delta;
-        }
-
-        while (effect.color.a > .3f)
-        {
-            color.a -= .05f;
-            effect.color = color;
-            yield return delta;
-        }
     }
 }

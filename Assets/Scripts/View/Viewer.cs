@@ -142,14 +142,6 @@ public class Viewer : MonoBehaviour
 
     public void SetRingActivate(int i) => ringInstances[i].SetActive(true, beadInstances);
 
-    [System.Obsolete]
-    public void ClearEffect()
-    {
-        foreach (BeadObject bead in beadInstances)
-            if (bead != null)
-                StartCoroutine(bead.LightEffectCoroutine());
-    }
-
     public async UniTask ClearEffectAsync()
     {
         float intensity = 0f;
