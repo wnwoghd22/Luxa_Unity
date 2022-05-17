@@ -160,8 +160,8 @@ public class Viewer : MonoBehaviour
             intensity -= 0.1f;
             bloom.intensity.value = intensity;
         }
-        bloom.intensity.value = 0f;
-
         await UniTask.Delay(System.TimeSpan.FromSeconds(0.3f));
+
+        bloom.intensity.value = 0f;
     }
 }

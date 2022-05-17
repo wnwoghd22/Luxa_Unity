@@ -9,44 +9,18 @@ public class SaveData
     public int LastPackNum { get => lastPackNum; set => lastPackNum = value; }
     [SerializeField] private int lastStageNum; // save player's last played stage number
     public int LastStageNum { get => lastStageNum; set => lastStageNum = value; }
-    private Dictionary<string, int> clearStatus;
-    public Dictionary<string, int> Status => clearStatus;
-    [SerializeField] private List<string> keyList;
-    [SerializeField] private List<int> valueList;
+    [SerializeField] private int[] clearStatus;
+    public int[] Status => clearStatus;
 
     public SaveData()
     {
         lastPackNum = 1;
         lastStageNum = 1;
-        clearStatus = new Dictionary<string, int>();
-        keyList = new List<string>();
-        valueList = new List<int>();
+        clearStatus = new int[GameManager.MAX_LEVEL_COUNT * GameManager.MAX_STAGE_COUNT];
     }
+    public void AddStatus(int index, int i) => clearStatus[index] = i;
+    public int GetStatus(int index) => clearStatus[index];
 
-    public void AddStatus(string s, int i)
-    {
-        if (clearStatus.ContainsKey(s))
-            clearStatus[s] = i;
-        else
-            clearStatus.Add(s, i);
-
-    }
-    public int getStatus(string s)
-    {
-        if (clearStatus.ContainsKey(s))
-            return clearStatus[s];
-        else
-            return 0;
-    }
-
-    public void ConstructDict()
-    {
-        for (int i = 0; i < keyList.Count; ++i)
-            AddStatus(keyList[i], valueList[i]);
-    }
-    public void DestructDict()
-    {
-        keyList = new List<string>(clearStatus.Keys);
-        valueList = new List<int>(clearStatus.Values);
-    }
+    public void AddStatus(int level, int stage, int i) => clearStatus[(level - 1) * GameManager.MAX_STAGE_COUNT + stage - 1] = i;
+    public int GetStatus(int level, int stage) => clearStatus[(level - 1) * GameManager.MAX_STAGE_COUNT + stage - 1];
 }
