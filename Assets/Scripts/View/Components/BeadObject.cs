@@ -56,6 +56,7 @@ public class BeadObject : BoardObject
         transform.position = reposition;
     }
 
+    [System.Obsolete]
     public IEnumerator LightEffectCoroutine()
     {
         WaitForSeconds delta = new WaitForSeconds(.03f);

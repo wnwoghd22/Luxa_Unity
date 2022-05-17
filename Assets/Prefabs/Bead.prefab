@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8979813885688627223}
   - component: {fileID: 6670105950935101378}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 2933688852615558360}
   - component: {fileID: 4122816620233121922}
   - component: {fileID: 72071645516314692}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bead
   m_TagString: Untagged
   m_Icon: {fileID: 0}
