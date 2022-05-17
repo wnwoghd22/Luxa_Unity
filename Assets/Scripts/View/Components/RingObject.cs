@@ -14,12 +14,14 @@ public class RingObject : BoardObject
     public void SetAngleOffset(float f) => angleOffset = f;
     private bool isActivated;
     //public void SetActive(bool b) => isActivated = b;
-    private Vector3 screenPos;
+    private Vector2 screenPos;
     private BeadObject[] beads;
+
+    private SpriteRenderer _renderer;
 
     public void SetActive(bool b, BeadObject[,] board = null)
     {
-        isActivated = b;
+        // isActivated = b;
         if (b)
         {
             SetAlpha(0.7f);
@@ -49,16 +51,23 @@ public class RingObject : BoardObject
             //Debug.Log(beads.Length);
             foreach (BeadObject bead in beads) {
                 //Debug.Log("set angle");
-                bead.SetAngleOffset(transform.position, angleOffset); 
+                // bead.SetAngleOffset(transform.position, angleOffset);
+
+                bead.transform.SetParent(this.transform);
             }
 
-            HandleRotate();
+            // HandleRotate();
         }
         else
         {
             angleOffset = 0f;
             initialAngle = 0f;
             SetAlpha(0.3f);
+
+            foreach (BeadObject bead in beads)
+            {
+                bead.transform.SetParent(null);
+            }
         }
     }
     
@@ -66,14 +75,20 @@ public class RingObject : BoardObject
     // Start is called before the first frame update
     void Start()
     {
+
+    }
+
+    private void OnEnable()
+    {
         angleOffset = 0f;
         initialAngle = 0f;
+        _renderer = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (isActivated) HandleRotate();
+        // if (isActivated) HandleRotate();
     }
 
     public override void SetGridPos(float offsetX, float offsetY, float unit, int x, int y, int z = 1)
@@ -86,14 +101,12 @@ public class RingObject : BoardObject
     public void SetPos(int x, int y) { this.x = x; this.y = y; }
     public void SetColor(int _color)
     {
-        SpriteRenderer renderer = gameObject.GetComponent<SpriteRenderer>();
-        renderer.color = new Color(_color == 0 ? 1 : 0, _color == 1 ? 1 : 0, _color == 2 ? 1 : 0, 0.3f);
+        _renderer.color = new Color(_color == 0 ? 1 : 0, _color == 1 ? 1 : 0, _color == 2 ? 1 : 0, 0.3f);
     }
     public void SetAlpha(float f)
     {
-        SpriteRenderer renderer = gameObject.GetComponent<SpriteRenderer>();
-        Color currentColor = renderer.color;
-        renderer.color = new Color(currentColor.r, currentColor.g, currentColor.b, f);
+        Color currentColor = _renderer.color;
+        _renderer.color = new Color(currentColor.r, currentColor.g, currentColor.b, f);
     }
 
     public void RotateClockwise(BeadObject[,] board)
@@ -202,23 +215,22 @@ public class RingObject : BoardObject
         }
     }
 
+    /// <summary>
+    /// need to fix it
+    /// </summary>
     public void SetAngleOffset()
     {
         screenPos = Camera.main.WorldToScreenPoint(transform.position);
-        Vector3 pos = SystemInfo.deviceType == DeviceType.Desktop ? Input.mousePosition : (Vector3)Input.GetTouch(0).position;
+        Vector2 pos = SystemInfo.deviceType == DeviceType.Desktop ? (Vector2)Input.mousePosition : Input.GetTouch(0).position;
 
-        Vector3 vec3 = pos - screenPos;
+        Vector2 vec3 = pos - screenPos;
         initialAngle = Mathf.Atan2(vec3.y, vec3.x);
         angleOffset = Mathf.Atan2(transform.right.y, transform.right.x) - Mathf.Atan2(vec3.y, vec3.x);
     }
-    public void HandleRotate()
+    public void HandleRotate(Vector2 inputPos)
     {
-        Vector3 pos = SystemInfo.deviceType == DeviceType.Desktop ? Input.mousePosition : (Vector3)Input.GetTouch(0).position;
-
-        Vector3 vec3 = pos - screenPos;
+        Vector2 vec3 = inputPos - (Vector2)transform.position;
         float angle = Mathf.Atan2(vec3.y, vec3.x);
         transform.eulerAngles = new Vector3(0, 0, angle * Mathf.Rad2Deg + angleOffset * Mathf.Rad2Deg);
-
-        foreach (BeadObject bead in beads) bead.UpdatePosition(angle - initialAngle, transform.position);
     }
 }

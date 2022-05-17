@@ -30,11 +30,17 @@ public class GameManager : MonoBehaviour
         private set => data.LastPackNum = value <= 1 ? 1 : value >= MAX_LEVEL_COUNT ? MAX_LEVEL_COUNT : value;
     }
 
-    private const int MAX_STAGE_COUNT = 30;
-    private const int MAX_LEVEL_COUNT = 5;
+    public const int MAX_STAGE_COUNT = 30;
+    public const int MAX_LEVEL_COUNT = 5;
+    public int CurrentStateIndex => (Level - 1) * MAX_STAGE_COUNT + StageNum - 1;
 
-    int rotateCount;
-    List<(int, bool)> playLog;
+    public const int STATE_NONE = 0;
+    public const int STATE_SOLVED = 1;
+    public const int STATE_MINIMUM = 2;
+
+    Stack<(int, bool)> playLog;
+    int RotateCount => playLog.Count;
+
     Scene activeScene;
     bool isComplete
     {
@@ -44,8 +50,6 @@ public class GameManager : MonoBehaviour
             else return board.isComplete;
         }
     }
-
-    private WaitUntil isSolved;
 
     private void Awake()
     {
@@ -58,7 +62,7 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
-        isSolved = new WaitUntil(() => isComplete);
+
     }
 
     void OnEnable() => SceneManager.sceneLoaded += OnLevelFinishedLoading;
@@ -87,13 +91,11 @@ public class GameManager : MonoBehaviour
     }
     private void InitializeTitle()
     {
-        data = FileManager.ReadSaveFile();
-
+        data ??= FileManager.ReadSaveFile();
 
         Viewer.CreateTitleBoard();
         //StageNum = data.LastStageNum;
 
-        rotateCount = 0;
         UIManager.SetTitleStageNum(StageNum);
         UIManager.SetPackNum(Level);
     }
@@ -102,7 +104,7 @@ public class GameManager : MonoBehaviour
     private async UniTask InitStageAsync()
     {
         UIManager.SetStageNum(Level + " - " + StageNum);
-        playLog = new List<(int, bool)>();
+        playLog = new Stack<(int, bool)>();
 
         FileManager.WriteSaveFile(Data);
 
@@ -110,8 +112,7 @@ public class GameManager : MonoBehaviour
 
         Viewer.CreateBoard(board);
 
-        rotateCount = 0;
-        UIManager.SetRotateCount(rotateCount, board.Minimum);
+        UIManager.SetRotateCount(RotateCount, board.Minimum);
     }
 
     public void UndoRotate(int index)
@@ -149,20 +150,20 @@ public class GameManager : MonoBehaviour
     {
         if (isComplete) return;
 
-        ++rotateCount;
-        UIManager.SetRotateCount(rotateCount, board.Minimum);
-        playLog.Add((index, zeta < 0));
-        //foreach ((int, bool) item in playLog) Debug.Log(item);
+        playLog.Push((index, zeta < 0));
+
+        UIManager.SetRotateCount(RotateCount, board.Minimum);
+
         board.Rotate(index, zeta < 0);
         Viewer.UpdateBoard(index, zeta < 0);
 
         if (isComplete)
         {
             //if player solved problem with minimum rotation
-            if (rotateCount == board.Minimum)
-                UIManager.SetRotateCountWithStar(rotateCount, board.Minimum);
+            if (RotateCount == board.Minimum)
+                UIManager.SetRotateCountWithStar(RotateCount, board.Minimum);
             else
-                UIManager.SetRotateCountWithCheck(rotateCount, board.Minimum);
+                UIManager.SetRotateCountWithCheck(RotateCount, board.Minimum);
             // StartCoroutine(MoveToNextLevelCoroutine());
             UniTask.Create(() => MoveToNextLevelAsync());
         }
@@ -178,11 +179,9 @@ public class GameManager : MonoBehaviour
     {
         if (playLog.Count == 0) return;
 
-        (int, bool) lastMove = playLog[playLog.Count - 1];
-        playLog.RemoveAt(playLog.Count - 1);
+        (int, bool) lastMove = playLog.Pop();
 
-        --rotateCount;
-        UIManager.SetRotateCount(rotateCount, board.Minimum);
+        UIManager.SetRotateCount(RotateCount, board.Minimum);
         board.Rotate(lastMove.Item1, !lastMove.Item2);
         Viewer.UpdateBoard(lastMove.Item1, !lastMove.Item2);
     }
@@ -230,7 +229,7 @@ public class GameManager : MonoBehaviour
 
     private async UniTask MoveToNextLevelAsync()
     {
-        data.AddStatus(data.LastPackNum + "-" + data.LastStageNum, rotateCount == board.Minimum ? 2 : 1);
+        Data.AddStatus(CurrentStateIndex, RotateCount == board.Minimum ? STATE_MINIMUM : STATE_SOLVED);
         FileManager.WriteSaveFile(Data);
 
         CheckAchievement();
@@ -242,29 +241,25 @@ public class GameManager : MonoBehaviour
 
     private void CheckAchievement()
     {
-        GPGS.UnlockAchievement("First Step");
-        if (data.Status.ContainsValue(2))
-            GPGS.UnlockAchievement("Perfect Solution");
+        GPGS.UnlockAchievement(GPGSIds.achievement_first_step);
+        if (RotateCount == board.Minimum)
+            GPGS.UnlockAchievement(GPGSIds.achievement_perfect_solution);
 
-        bool completeFlag = true, conquerFlag = true;
-        for (int i = 1; i <= 30; ++i)
+        int state = 2;
+        for (int i = CurrentStateIndex; i < Level * MAX_STAGE_COUNT; ++i)
+            state = Math.Min(state, Data.Status[i]);
+
+        switch (state)
         {
-            if (data.Status.ContainsKey(Level + "-" + i))
-            {
-                int result = data.Status[Level + "-" + i];
-                if (result != 2)
-                {
-                    conquerFlag = false;
-                }
-            }
-            else
-            {
-                completeFlag = false;
-                conquerFlag = false;
+            case STATE_SOLVED:
+                GPGS.UnlockAchievement(GPGS.CompleteKeyList[Level - 1]);
                 break;
-            }
+            case STATE_MINIMUM:
+                GPGS.UnlockAchievement(GPGS.ConquerKeyList[Level - 1]);
+                break;
+            case STATE_NONE:
+            default:
+                break;
         }
-        if (conquerFlag) GPGS.UnlockAchievement("Conquer Level " + Level);
-        if (completeFlag) GPGS.UnlockAchievement("Complete Level " + Level);
     }
 }

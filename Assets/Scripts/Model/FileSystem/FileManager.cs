@@ -26,22 +26,12 @@ public class FileManager : MonoBehaviour
 #if UNITY_EDITOR
             Debug.Log("No file!");
 #endif
-            return null;
+            return new SaveData();
         }
 
         StreamReader saveFile = new StreamReader(filePath);
 
         SaveData data = JsonUtility.FromJson<SaveData>(saveFile.ReadToEnd());
-
-        Debug.Log(data);
-
-        if (data != null)
-        {
-#if UNITY_EDITOR
-            Debug.Log(data.LastPackNum + " " + data.LastStageNum);
-#endif
-            data.ConstructDict();
-        }
 
         return data;
     }
@@ -50,8 +40,6 @@ public class FileManager : MonoBehaviour
         string filePath = Application.persistentDataPath + "/save.json";
 
         StreamWriter saveFile = new StreamWriter(filePath);
-
-        data.DestructDict();
 
         saveFile.Write(JsonUtility.ToJson(data));
         saveFile.Close();
