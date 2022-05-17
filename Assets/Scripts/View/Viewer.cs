@@ -142,6 +142,10 @@ public class Viewer : MonoBehaviour
 
     public void SetRingActivate(int i) => ringInstances[i].SetActive(true, beadInstances);
 
+    /// <summary>
+    /// TODO: need to make it FRAME-INDEPENDENT
+    /// </summary>
+    /// <returns></returns>
     public async UniTask ClearEffectAsync()
     {
         float intensity = 0f;
