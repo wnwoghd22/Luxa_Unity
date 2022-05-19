@@ -7,14 +7,16 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [field: SerializeField] public FileManager FileManager { get; private set; }
+    public static GameManager Instance;
 
-    UIManager ui;
-    PlayGamesServiceManager pm;
+    [field: SerializeField] public FileManager FileManager { get; private set; }
+    [field: SerializeField] public UIManager UIManager { get; private set; }
+    [field: SerializeField] public PlayGamesServiceManager GPGS { get; private set; }
+    [field: SerializeField] public Viewer Viewer { get; private set; }
+
     Board board;
     public void SetBoard(Board b) => board = b;
-    Viewer viewer;
-    //int stageNum = 1;
+
     SaveData data;
     public SaveData Data => data;
     public int StageNum
@@ -28,11 +30,17 @@ public class GameManager : MonoBehaviour
         private set => data.LastPackNum = value <= 1 ? 1 : value >= MAX_LEVEL_COUNT ? MAX_LEVEL_COUNT : value;
     }
 
-    private const int MAX_STAGE_COUNT = 30;
-    private const int MAX_LEVEL_COUNT = 5;
+    public const int MAX_STAGE_COUNT = 30;
+    public const int MAX_LEVEL_COUNT = 5;
+    public int CurrentStateIndex => (Level - 1) * MAX_STAGE_COUNT + StageNum - 1;
 
-    int rotateCount;
-    List<(int, bool)> playLog;
+    public const int STATE_NONE = 0;
+    public const int STATE_SOLVED = 1;
+    public const int STATE_MINIMUM = 2;
+
+    Stack<(int, bool)> playLog;
+    int RotateCount => playLog.Count;
+
     Scene activeScene;
     bool isComplete
     {
@@ -43,20 +51,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private WaitUntil isSolved;
-
     private void Awake()
     {
-        var obj = FindObjectsOfType<GameManager>();
-        if (obj.Length == 1)
+        if (Instance == null)
         {
-            DontDestroyOnLoad(gameObject);
+            Instance = this;
+            DontDestroyOnLoad(this);
         }
         else Destroy(gameObject);
     }
     void Start()
     {
-        isSolved = new WaitUntil(() => isComplete);
+
     }
 
     void OnEnable() => SceneManager.sceneLoaded += OnLevelFinishedLoading;
@@ -66,20 +72,14 @@ public class GameManager : MonoBehaviour
         activeScene = scene;
         if (activeScene.name == "Title")
         {
-            if (viewer == null)
-                viewer = FindObjectOfType<Viewer>();
-            if (ui == null)
-                ui = FindObjectOfType<UIManager>();
-            if (pm == null)
-                pm = FindObjectOfType<PlayGamesServiceManager>();
-            ui.SetTitleUIActive(true);
-            ui.SetGameUIActive(false);
+            UIManager.SetTitleUIActive(true);
+            UIManager.SetGameUIActive(false);
             InitializeTitle();
         }
         else if (activeScene.name == "GameScene")
         {
-            ui.SetTitleUIActive(false);
-            ui.SetGameUIActive(true);
+            UIManager.SetTitleUIActive(false);
+            UIManager.SetGameUIActive(true);
 
             UniTask.Create(() => InitStageAsync());
         }
@@ -91,37 +91,42 @@ public class GameManager : MonoBehaviour
     }
     private void InitializeTitle()
     {
-        data = FileManager.ReadSaveFile();
+        data ??= FileManager.ReadSaveFile();
 
-
-        viewer.CreateTitleBoard();
+        Viewer.CreateTitleBoard();
         //StageNum = data.LastStageNum;
 
-        rotateCount = 0;
-        ui.SetTitleStageNum(StageNum);
-        ui.SetPackNum(Level);
+        UIManager.SetTitleStageNum(StageNum);
+        UIManager.SetPackNum(Level);
     }
     public void SetData(SaveData data) => this.data = data == null ? new SaveData() : data;
 
     private async UniTask InitStageAsync()
     {
-        ui.SetStageNum(Level + " - " + StageNum);
-        playLog = new List<(int, bool)>();
+        UIManager.SetStageNum(Level + " - " + StageNum);
+        playLog = new Stack<(int, bool)>();
 
         FileManager.WriteSaveFile(Data);
 
         board = DataParser.ParseBoardData(await FileManager.GetStageFileAsync(Level, StageNum));
 
-        viewer.CreateBoard(board);
+        Viewer.CreateBoard(board);
 
-        rotateCount = 0;
-        ui.SetRotateCount(rotateCount, board.Minimum);
+        UIManager.SetRotateCount(RotateCount, board.Minimum);
     }
 
     public void UndoRotate(int index)
     {
-        viewer.UndoRotate(index);
+        Viewer.UndoRotate(index);
     }
+
+    /// <summary>
+    /// Should it be like this...?
+    /// How about make TitleBoard Class that inherits Board?
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="zeta"></param>
+    [Obsolete]
     public void BoardUpdate(int index, float zeta)
     {
         if (activeScene.name == "Title") UpdateBoardForTitle(index, zeta);
@@ -132,33 +137,33 @@ public class GameManager : MonoBehaviour
         if (index == 0)
         {
             Level += zeta < 0 ? 1 : -1;
-            ui.SetPackNum(Level);
+            UIManager.SetPackNum(Level);
         }
         else if (index == 1)
         {
             StageNum += zeta < 0 ? 1 : -1;
-            ui.SetTitleStageNum(StageNum);
+            UIManager.SetTitleStageNum(StageNum);
         }
-        viewer.UpdateBoard(index, zeta < 0);
+        Viewer.UpdateBoard(index, zeta < 0);
     }
     public void UpdateBoardForGameScene(int index, float zeta)
     {
         if (isComplete) return;
 
-        ++rotateCount;
-        ui.SetRotateCount(rotateCount, board.Minimum);
-        playLog.Add((index, zeta < 0));
-        //foreach ((int, bool) item in playLog) Debug.Log(item);
+        playLog.Push((index, zeta < 0));
+
+        UIManager.SetRotateCount(RotateCount, board.Minimum);
+
         board.Rotate(index, zeta < 0);
-        viewer.UpdateBoard(index, zeta < 0);
+        Viewer.UpdateBoard(index, zeta < 0);
 
         if (isComplete)
         {
             //if player solved problem with minimum rotation
-            if (rotateCount == board.Minimum)
-                ui.SetRotateCountWithStar(rotateCount, board.Minimum);
+            if (RotateCount == board.Minimum)
+                UIManager.SetRotateCountWithStar(RotateCount, board.Minimum);
             else
-                ui.SetRotateCountWithCheck(rotateCount, board.Minimum);
+                UIManager.SetRotateCountWithCheck(RotateCount, board.Minimum);
             // StartCoroutine(MoveToNextLevelCoroutine());
             UniTask.Create(() => MoveToNextLevelAsync());
         }
@@ -167,20 +172,18 @@ public class GameManager : MonoBehaviour
     public void SetRingActivate(int i)
     {
         if (isComplete) return;
-        viewer.SetRingActivate(i);
+        Viewer.SetRingActivate(i);
     }
 
     public void Undo()
     {
         if (playLog.Count == 0) return;
 
-        (int, bool) lastMove = playLog[playLog.Count - 1];
-        playLog.RemoveAt(playLog.Count - 1);
+        (int, bool) lastMove = playLog.Pop();
 
-        --rotateCount;
-        ui.SetRotateCount(rotateCount, board.Minimum);
+        UIManager.SetRotateCount(RotateCount, board.Minimum);
         board.Rotate(lastMove.Item1, !lastMove.Item2);
-        viewer.UpdateBoard(lastMove.Item1, !lastMove.Item2);
+        Viewer.UpdateBoard(lastMove.Item1, !lastMove.Item2);
     }
 
     public void MoveToGameScene() => SceneManager.LoadScene("GameScene");
@@ -226,43 +229,37 @@ public class GameManager : MonoBehaviour
 
     private async UniTask MoveToNextLevelAsync()
     {
-        viewer.ClearEffect();
-
-        data.AddStatus(data.LastPackNum + "-" + data.LastStageNum, rotateCount == board.Minimum ? 2 : 1);
+        Data.AddStatus(CurrentStateIndex, RotateCount == board.Minimum ? STATE_MINIMUM : STATE_SOLVED);
         FileManager.WriteSaveFile(Data);
 
         CheckAchievement();
-
-        await UniTask.Delay(TimeSpan.FromSeconds(1f));
+        
+        await Viewer.ClearEffectAsync();
 
         NextStage();
     }
 
     private void CheckAchievement()
     {
-        pm.UnlockAchievement("First Step");
-        if (data.Status.ContainsValue(2))
-            pm.UnlockAchievement("Perfect Solution");
+        GPGS.UnlockAchievement(GPGSIds.achievement_first_step);
+        if (RotateCount == board.Minimum)
+            GPGS.UnlockAchievement(GPGSIds.achievement_perfect_solution);
 
-        bool completeFlag = true, conquerFlag = true;
-        for (int i = 1; i <= 30; ++i)
+        int state = 2;
+        for (int i = CurrentStateIndex; i < Level * MAX_STAGE_COUNT; ++i)
+            state = Math.Min(state, Data.Status[i]);
+
+        switch (state)
         {
-            if (data.Status.ContainsKey(Level + "-" + i))
-            {
-                int result = data.Status[Level + "-" + i];
-                if (result != 2)
-                {
-                    conquerFlag = false;
-                }
-            }
-            else
-            {
-                completeFlag = false;
-                conquerFlag = false;
+            case STATE_SOLVED:
+                GPGS.UnlockAchievement(GPGS.CompleteKeyList[Level - 1]);
                 break;
-            }
+            case STATE_MINIMUM:
+                GPGS.UnlockAchievement(GPGS.ConquerKeyList[Level - 1]);
+                break;
+            case STATE_NONE:
+            default:
+                break;
         }
-        if (conquerFlag) pm.UnlockAchievement("Conquer Level " + Level);
-        if (completeFlag) pm.UnlockAchievement("Complete Level " + Level);
     }
 }

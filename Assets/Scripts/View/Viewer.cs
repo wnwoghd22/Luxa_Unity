@@ -1,9 +1,11 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
-public class Viewer : MonoBehaviour {
-
+public class Viewer : MonoBehaviour
+{
     [SerializeField] private GameObject beadPrefab;
     [SerializeField] private GameObject ringPrefab;
 
@@ -16,10 +18,14 @@ public class Viewer : MonoBehaviour {
     private float offsetX;
     private float offsetY;
 
+    private Bloom bloom;
+    private const float BLOOM_MAX_INTENSITY = 10f;
+    private const float BLOOM_MIN_INTENSITY = 5f;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        GetComponent<PostProcessVolume>().profile.TryGetSettings(out bloom);
     }
 
     // Update is called once per frame
@@ -138,10 +144,18 @@ public class Viewer : MonoBehaviour {
 
     public void SetRingActivate(int i) => ringInstances[i].SetActive(true, beadInstances);
 
-    public void ClearEffect()
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public async UniTask ClearEffectAsync()
     {
-        foreach (BeadObject bead in beadInstances)
-            if (bead != null)
-                StartCoroutine(bead.LightEffectCoroutine());
+        bloom.intensity.value = 0;
+
+        while ((bloom.intensity.value += 10f * Time.deltaTime) < BLOOM_MAX_INTENSITY) await UniTask.Yield(); // fade in
+        while ((bloom.intensity.value -= 10f * Time.deltaTime) > BLOOM_MIN_INTENSITY) await UniTask.Yield(); // fade out
+        await UniTask.Delay(System.TimeSpan.FromSeconds(0.3f));
+
+        bloom.intensity.value = 0f;
     }
 }
