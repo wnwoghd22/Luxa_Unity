@@ -12,6 +12,7 @@ public class Controller : MonoBehaviour {
 
     private GameManager gm;
 
+    private Camera _main;
     private RuntimePlatform platform;
 
     // Start is called before the first frame update
@@ -20,6 +21,7 @@ public class Controller : MonoBehaviour {
         currentActivated = null;
         gm = FindObjectOfType<GameManager>();
 
+        _main = Camera.main;
         platform = Application.platform;
     }
 
@@ -41,7 +43,7 @@ public class Controller : MonoBehaviour {
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 mousePos = _main.ScreenToWorldPoint(Input.mousePosition);
             Collider2D[] hits = Physics2D.OverlapPointAll(mousePos);
 
             if (hits.Length == 1)
@@ -55,7 +57,7 @@ public class Controller : MonoBehaviour {
         }
         else if (Input.GetMouseButtonUp(0))
         {
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 mousePos = _main.ScreenToWorldPoint(Input.mousePosition);
 
             if (currentActivated)
             {
@@ -86,7 +88,7 @@ public class Controller : MonoBehaviour {
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
-            Vector2 touchPos = Camera.main.ScreenToWorldPoint(touch.position);
+            Vector2 touchPos = _main.ScreenToWorldPoint(touch.position);
 
             switch (touch.phase)
             {
