@@ -19,6 +19,8 @@ public class Viewer : MonoBehaviour
     private float offsetY;
 
     private Bloom bloom;
+    private const float BLOOM_MAX_INTENSITY = 10f;
+    private const float BLOOM_MIN_INTENSITY = 5f;
 
     // Start is called before the first frame update
     void Start()
@@ -143,27 +145,15 @@ public class Viewer : MonoBehaviour
     public void SetRingActivate(int i) => ringInstances[i].SetActive(true, beadInstances);
 
     /// <summary>
-    /// TODO: need to make it FRAME-INDEPENDENT
+    /// 
     /// </summary>
     /// <returns></returns>
     public async UniTask ClearEffectAsync()
     {
-        float intensity = 0f;
+        bloom.intensity.value = 0;
 
-        bloom.intensity.value = intensity;
-
-        while (intensity < 7f)
-        {
-            await UniTask.Yield();
-            intensity += 0.1f;
-            bloom.intensity.value = intensity;
-        }
-        while (intensity > 3f)
-        {
-            await UniTask.Yield();
-            intensity -= 0.1f;
-            bloom.intensity.value = intensity;
-        }
+        while ((bloom.intensity.value += 10f * Time.deltaTime) < BLOOM_MAX_INTENSITY) await UniTask.Yield(); // fade in
+        while ((bloom.intensity.value -= 10f * Time.deltaTime) > BLOOM_MIN_INTENSITY) await UniTask.Yield(); // fade out
         await UniTask.Delay(System.TimeSpan.FromSeconds(0.3f));
 
         bloom.intensity.value = 0f;
