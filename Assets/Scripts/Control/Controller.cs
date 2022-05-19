@@ -44,44 +44,21 @@ public class Controller : MonoBehaviour {
         if (Input.GetMouseButtonDown(0))
         {
             Vector2 mousePos = _main.ScreenToWorldPoint(Input.mousePosition);
-            Collider2D[] hits = Physics2D.OverlapPointAll(mousePos);
-
-            if (hits.Length == 1)
-            {    
-                currentActivated = hits[0].gameObject.GetComponent<RingObject>();
-                ringPos = hits[0].gameObject.transform.position;
-                initialPos = mousePos - ringPos;
-                angleOffset = Mathf.Atan2(initialPos.y, initialPos.x);
-                gm.SetRingActivate(currentActivated.Index);
-            }
+            SelectRing(mousePos);
+            return;
         }
-        else if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButton(0))
         {
             Vector2 mousePos = _main.ScreenToWorldPoint(Input.mousePosition);
-
-            if (currentActivated)
-            {
-                endPos = mousePos - ringPos;
-                currentActivated.SetActive(false);
-                Rotate();
-            }
+            currentActivated?.HandleRotate(mousePos);
+            return;
         }
-        //else if (Input.GetMouseButton(0))
-        //{
-        //    Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        //    Vector3 currentVec = mousePos - ringPos;
-        //    float angle = Mathf.Atan2(currentVec.y, currentVec.x) - angleOffset;
-
-        //    Debug.Log(angle);
-        //    if (Mathf.Abs(angle) > Mathf.PI / 3) //over 60 deg
-        //    {
-        //        Debug.Log("over 60 deg");
-        //        initialPos = mousePos;
-        //        Vector3 vec = initialPos - ringPos;
-        //        angleOffset = Mathf.Atan2(vec.y, vec.x);
-        //        gm.HandleOver60deg(currentActivated.Index, angle > 0);
-        //    }
-        //}
+        if (Input.GetMouseButtonUp(0))
+        {
+            Vector2 mousePos = _main.ScreenToWorldPoint(Input.mousePosition);
+            UnselectRing(mousePos);
+            return;
+        }
     }
     private void HandleTouch()
     {
@@ -93,26 +70,13 @@ public class Controller : MonoBehaviour {
             switch (touch.phase)
             {
                 case TouchPhase.Began:
-                    Collider2D[] hits = Physics2D.OverlapPointAll(touchPos);
-
-                    if (hits.Length == 1)
-                    {
-                        currentActivated = hits[0].gameObject.GetComponent<RingObject>();
-                        ringPos = currentActivated.gameObject.transform.position;
-                        initialPos = touchPos - ringPos;
-                        gm.SetRingActivate(currentActivated.Index);
-                    }
+                    SelectRing(touchPos);
                     break;
                 case TouchPhase.Moved:
+                    currentActivated?.HandleRotate(touchPos);
                     break;
                 case TouchPhase.Ended:
-                    if (currentActivated)
-                    {
-                        endPos = touchPos - ringPos;
-                        currentActivated.SetAlpha(0.3f);
-                        currentActivated.SetActive(false);
-                        Rotate();
-                    }
+                    UnselectRing(touchPos);
                     break;
             }
         }
@@ -130,6 +94,27 @@ public class Controller : MonoBehaviour {
         else if (Input.GetKeyDown(KeyCode.Menu))
         {
 
+        }
+    }
+    private void SelectRing(Vector2 pos)
+    {
+        Collider2D[] hits = Physics2D.OverlapPointAll(pos);
+
+        if (hits.Length == 1)
+        {
+            currentActivated = hits[0].gameObject.GetComponent<RingObject>();
+            ringPos = currentActivated.gameObject.transform.position;
+            initialPos = pos - ringPos;
+            gm.SetRingActivate(currentActivated.Index);
+        }
+    }
+    private void UnselectRing(Vector2 pos)
+    {
+        if (currentActivated)
+        {
+            endPos = pos - ringPos;
+            currentActivated.SetActive(false);
+            Rotate();
         }
     }
 
